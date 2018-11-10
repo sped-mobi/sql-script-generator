@@ -1,0 +1,19 @@
+{
+    "profiles": {
+        "TSqlScriptGenerator": {
+            "commandName": "Project"
+        },
+        "Generate": {
+            "commandName": "Project",
+            "commandLineArgs": "generate"
+        },
+        "Generate Help": {
+            "commandName": "Project",
+            "commandLineArgs": "generate -?"
+        },
+        "Generate Configuration": {
+            "commandName": "Project",
+            "commandLineArgs": "generate -c \"C:\\stage\\src\\sandbox\\TAC\\tools\\TSqlScriptGenerator\\Properties\\Database.xml\" -o \"C:\\stage\\src\\sandbox\\TAC\\tools\\TSqlScriptGenerator\\Properties\\Database.sql\" --clip --pause"
+        }
+    }
+}

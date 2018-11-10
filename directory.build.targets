@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+*********************************************************************************************** 
+Directory.Build.targets
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) Ollon, LLC. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <Import Project="$(VsToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(ImportVSSDKTargets)' == 'true'" />
+
+  <!--                           -->
+  <!--   Assembly Search Paths   -->
+  <!--                           -->
+  <PropertyGroup>
+    <AssemblyFoldersSuffix>AssemblyFoldersEx</AssemblyFoldersSuffix>
+    <FrameworkRegistryBase>Software\Microsoft\.NETFramework</FrameworkRegistryBase>
+    <ProjectSystemExtensionDir>$(DevEnvDir)CommonExtensions\Microsoft\Project\</ProjectSystemExtensionDir>
+    <NuGetExtensionDir>$(DevEnvDir)CommonExtensions\Microsoft\NuGet\</NuGetExtensionDir>
+    <LanguageServicesDir>$(DevEnvDir)CommonExtensions\Microsoft\ManagedLanguages\VBCSharp\LanguageServices\</LanguageServicesDir>
+    <CommonAssembliesDir>$([System.IO.Path]::GetFullPath('$(DevEnvDir)..\..\VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\'))</CommonAssembliesDir>
+    <PrivateAssemblies>$(DevEnvDir)PrivateAssemblies\</PrivateAssemblies>
+    <PublicAssemblies>$(DevEnvDir)PublicAssemblies\</PublicAssemblies>
+    <ExtensionsDir>$(DevEnvDir)Extensions\</ExtensionsDir>
+    <ManagedProjectSystemDir>$(ExtensionsDir)Microsoft\ManagedProjectSystem\</ManagedProjectSystemDir>
+    <SqlCommonDir>$(DevEnvDir)Extensions\Microsoft\SQLCommon\</SqlCommonDir>
+    <SSISDir>$(DevEnvDir)CommonExtensions\Microsoft\SSIS\</SSISDir>
+    <BISharedDir>$(DevEnvDir)CommonExtensions\Microsoft\BIShared\</BISharedDir>
+    <DACExtensions150Dir>$(DevEnvDir)Extensions\Microsoft\SQLDB\DAC\150\</DACExtensions150Dir>
+    <AssemblySearchPaths>
+      $(SolutionDir)Lib\;
+      $(MSBuildExtensionsPath)\$(VisualStudioVersion)\Bin\;
+      $(MSBuildExtensionsPath)\$(VisualStudioVersion)\Bin\Roslyn\;
+      $(ProjectSystemExtensionDir);
+      $(NuGetExtensionDir);
+      $(LanguageServicesDir);
+      $(ReferencePath);
+      {CandidateAssemblyFiles};
+      {HintPathFromItem};
+      {TargetFrameworkDirectory};
+      {RawFileName};
+      {GAC};
+      {Registry:$(FrameworkRegistryBase),$(TargetFrameworkVersion),$(AssemblyFoldersSuffix)$(AssemblyFoldersExConditions)};
+      $(DevEnvDir);
+      $(SSISDir);
+      $(SSISDir)140\;
+      $(SqlCommonDir);
+      $(BISharedDir);
+      $(PrivateAssemblies);
+      $(PublicAssemblies);
+      $(CommonAssembliesDir);
+      $(DACExtensions150Dir);
+      $(ManagedProjectSystemDir);
+    </AssemblySearchPaths>
+    <DesignTimeAssemblySearchPaths>$(AssemblySearchPaths)</DesignTimeAssemblySearchPaths>
+  </PropertyGroup>
+
+
+  <PropertyGroup>
+    <CleanDependsOn>
+      $(CleanDependsOn);
+      SuperClean;
+      Restore;
+    </CleanDependsOn>
+  </PropertyGroup>
+
+  <!--           -->
+  <!--   VSSDK   -->
+  <!--           -->
+
+  <Target Name="LinkVSSDKEmbeddableAssemblies" AfterTargets="ResolveReferences" BeforeTargets="FindReferenceAssembliesForReferences">
+    <ItemGroup>
+      <!--<VSCTCompile Condition="
+              '%(Extension)' == '.vsct'
+           " Include="%(FullPath)">
+        <ResourceName>Menus.ctmenu</ResourceName>
+      </VSCTCompile>-->
+      <ReferencePath Condition="
+              '%(FileName)' == 'Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Imaging.Interop.15.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Setup.Configuration.Interop'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Embeddable'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.10.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.11.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.12.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.12.1.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.14.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.15.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Shell.Interop.15.3.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.11.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.12.0'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.12.1.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.14.2.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.TextManager.Interop.15.1.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.Feedback.Interop.12.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.VisualStudio.ProjectSystem.Interop'
+           or '%(FileName)' == 'NuGet.VisualStudio'
+           or '%(FileName)' == 'stdole'
+           or '%(FileName)' == 'microsoft.visualstudio.designer.interfaces'
+           or '%(FileName)' == 'EnvDTE80'
+           or '%(FileName)' == 'EnvDTE90'
+           or '%(FileName)' == 'EnvDTE100'
+           or '%(FileName)' == 'Microsoft.VisualStudio.CommandBars'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.10.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.11.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.14.0.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.14.1.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Interop.14.2.DesignTime'
+           or '%(FileName)' == 'Microsoft.Internal.VisualStudio.Shell.Embeddable'
+              ">
+        <EmbedInteropTypes>true</EmbedInteropTypes>
+      </ReferencePath>
+    </ItemGroup>
+  </Target>
+
+  <PropertyGroup Condition="'$(CreateVsixContainer)' == 'true'">
+    <GetVsixSourceItemsDependsOn>IncludeNuGetResolvedAssets;$(GetVsixSourceItemsDependsOn)</GetVsixSourceItemsDependsOn>
+  </PropertyGroup>
+
+  <Target Name="IncludeNuGetResolvedAssets" AfterTargets="ResolveReferences" Condition="'$(CreateVsixContainer)' == 'true'">
+    <ItemGroup>
+      <_ReferenceCopyLocalPathsWithPotentialInclusions Include="@(ReferenceCopyLocalPaths)" />
+      <VSIXCopyLocalReferenceSourceItem Include="@(_ReferenceCopyLocalPathsWithPotentialInclusions)">
+        <ForceIncludeInVsix>true</ForceIncludeInVsix>
+        <Private>true</Private>
+      </VSIXCopyLocalReferenceSourceItem>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="VSIXIdentifierProjectOutputGroup" Condition="'$(CreateVsixContainer)' == 'false'" />
+  <Target Name="VSIXNameProjectOutputGroup" Condition="'$(CreateVsixContainer)' == 'false'" />
+
+  <PropertyGroup Condition="'$(DeployExtension)' == 'true'">
+    <StartAction>Program</StartAction>
+    <StartProgram Condition="'$(DevEnvDir)' != ''">$(DevEnvDir)devenv.exe</StartProgram>
+    <StartArguments>/rootsuffix Exp</StartArguments>
+  </PropertyGroup>
+
+
+  <Target Name="SuperClean">
+    <ItemGroup>
+      <RemoveFiles Include="$(OutputPath)\*.*" />
+      <RemoveFiles Include="$(BaseIntermediateOutputPath)\**\*" />
+    </ItemGroup>
+    <Message Importance="high" Text="------ SuperClean started: Project: $(MSBuildProjectName), Configuration:  $(Configuration)|$(Platform) ------" />
+    <Delete Files="@(RemoveFiles)" />
+    <Message Importance="high" Text="------ SuperClean ended: Project: $(MSBuildProjectName), Configuration:  $(Configuration)|$(Platform) ------" />
+  </Target>
+
+  <PropertyGroup>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">$(MicrosoftNETCoreApp20PackageVersion)</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">$(MicrosoftNETCoreApp21PackageVersion)</RuntimeFrameworkVersion>
+    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">$(MicrosoftNETCoreApp22PackageVersion)</RuntimeFrameworkVersion>
+    <NETStandardImplicitPackageVersion Condition=" '$(TargetFramework)' == 'netstandard2.0' ">$(NETStandardLibrary20PackageVersion)</NETStandardImplicitPackageVersion>
+    <NETCoreAppMaximumVersion>99.9</NETCoreAppMaximumVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DestinationFolder>$(OutputPath)</DestinationFolder>
+  </PropertyGroup>
+
+  <Target Name="AfterBuild" Condition="'$(DestinationFolder)'!=''">
+    <Exec Command="$(GacUtilPath) -u $(TargetPath)" IgnoreExitCode="true" />
+    <Exec Command="$(GacUtilPath) -i $(TargetPath)" IgnoreExitCode="true" />
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(DestinationFolder)" OverwriteReadOnlyFiles="true" />
+  </Target>
+
+
+</Project>

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+*********************************************************************************************** 
+Directory.Build.props
+
+WARNING:  DO NOT MODIFY this file unless you are knowledgeable about MSBuild and have
+          created a backup copy.  Incorrect changes to this file will make it
+          impossible to load or build your projects from the command-line or the IDE.
+
+Copyright (c) Ollon, LLC. All rights reserved. 
+***********************************************************************************************
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+  </PropertyGroup>
+
+  <PropertyGroup Label="RestoreSources">
+    <RestoreSources>$(DotNetRestoreSources)</RestoreSources>
+    <RestoreSources>
+      https://api.nuget.org/v3/index.json;
+      https://dotnet.myget.org/F/dotnet-core/api/v3/index.json;
+      https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
+      https://dotnet.myget.org/F/aspnetcore-tools/api/v3/index.json;
+      https://dotnet.myget.org/F/msbuild/api/v3/index.json;
+      https://dotnet.myget.org/F/roslyn/api/v3/index.json;
+      https://vside.myget.org/F/vssdk/api/v3/index.json;
+      https://vside.myget.org/F/vsmac/api/v3/index.json;
+      https://dotnet.myget.org/F/aspnetcore-dev/api/v3/index.json;
+      $(RestoreSources)
+    </RestoreSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <DotNetCoreRuntime Include="$(MicrosoftNETCoreApp20PackageVersion)" />
+    <DotNetCoreRuntime Include="$(MicrosoftNETCoreApp21PackageVersion)" />
+    <DotNetCoreRuntime Include="$(MicrosoftNETCoreApp22PackageVersion)" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <SolutionDir>$(MSBuildThisFileDirectory)</SolutionDir>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RepositoryDirectory>$(SolutionDir)</RepositoryDirectory>
+    <RepositoryDirectory Condition="!HasTrailingSlash('$(RepositoryDirectory)')">$(RepositoryDirectory)\</RepositoryDirectory>
+    <OutputPath>$(RepositoryDirectory)bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
+    <BaseIntermediateOutputPath>$(RepositoryDirectory)bin\obj\$(MSBuildProjectName)\</BaseIntermediateOutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)\</IntermediateOutputPath>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+    <RuntimeIdentifiers Condition="'$(RuntimeIdentifiers)'==''">win</RuntimeIdentifiers>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <NoWarn>
+      CS1591;
+      MSB3277;
+      CS0649;
+      IDE0001;
+      IDE0003;
+      IDE0008;
+      CS00067;
+      $(NoWarn)
+    </NoWarn>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>$(RepositoryDirectory)build\strong name keys\strongname.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+
+  <!--                           -->
+  <!--   Output/Temp Directories -->
+  <!--                           -->
+
+  <!--                           -->
+  <!--   Developer Environment   -->
+  <!--                           -->
+  <Choose>
+    <When Condition="'$(DevEnvDir)' == '*Undefined*' OR '$(DevEnvDir)' == ''">
+      <PropertyGroup>
+        <VSInstall>$([MSBuild]::GetRegistryValue(`HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7`, `$(VisualStudioVersion)`))\</VSInstall>
+        <DevEnvDir>$(VSInstall)Common7\IDE\</DevEnvDir>
+        <MSBuildDir>$(VSInstall)MSBuild\$(VisualStudioVersion)\Bin\</MSBuildDir>
+        <VsSDKInstall>$(VSInstall)VSSDK\</VsSDKInstall>
+        <Assemblies40>$(VsSDKInstall)VSSDK\VisualStudioIntegration\Common\Assemblies\v4.0\</Assemblies40>
+        <PropertyPageBase>$(VsSDKInstall)VisualStudioIntegration\Common\Source\CSharp\PropertyPageBase\</PropertyPageBase>
+      </PropertyGroup>
+    </When>
+  </Choose>
+
+  <PropertyGroup>
+    <GacUtilPath>"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\NETFX 4.0 Tools\gacutil.exe"</GacUtilPath>
+    <SSISFolderBase>C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\CommonExtensions\Microsoft\SSIS\140\</SSISFolderBase>
+    <ConnectionsFolder>$(SSISFolderBase)Connections\</ConnectionsFolder>
+    <UIFolder>$(SSISFolderBase)UI\</UIFolder>
+	  <TasksFolder>$(SSISFolderBase)Tasks\</TasksFolder>
+  </PropertyGroup>
+
+
+</Project>

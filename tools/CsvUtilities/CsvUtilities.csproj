@@ -1,0 +1,31 @@
+﻿<Project>
+
+  <Import Project="Sdk.props" Sdk="Microsoft.NET.Sdk" />
+
+
+
+  <PropertyGroup>
+    <TargetFramework>net471</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>System.Data.Csv</RootNamespace>
+    <AssemblyName>System.Data.Csv</AssemblyName>
+  </PropertyGroup>
+
+
+
+  <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.8.10" />
+    <PackageReference Include="Microsoft.SqlServer.DacFx.x64" Version="150.4200.1" />
+  </ItemGroup>
+
+
+
+  <ItemGroup>
+    <Reference Include="System.Data.DataSetExtensions" />
+  </ItemGroup>
+
+
+
+
+  <Import Project="Sdk.targets" Sdk="Microsoft.NET.Sdk" />
+</Project>
