@@ -4,6 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Serialization;
@@ -35,10 +36,42 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             return ScriptFactory.FullTableName(table.Parent.DatabaseName, table.Schema, table.Name, quoteType);
         }
 
+        public SchemaObjectName GenerateSchemaAndIdentifierName(string schemaName, string identifierName, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            SchemaObjectName objectName = new SchemaObjectName();
+            objectName.Identifiers.AddRange(ScriptFactory.Identifier(schemaName, quoteType), ScriptFactory.Identifier(identifierName, quoteType));
+            return objectName;
+        }
+
+        public SchemaObjectName GenerateProcedureName(ProcedureKind kind, string databaseName, string tableName, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            SchemaObjectName objectName = new SchemaObjectName();
+            objectName.Identifiers.AddRange(ScriptFactory.Identifier(tableName, quoteType));
+            return objectName;
+        }
+
+        private static string CreateProcedureNameString(ProcedureKind kind, string databaseName, string tableName)
+        {
+            switch (kind)
+            {
+                case ProcedureKind.Insert:
+                    return $"usp_{databaseName}_Insert{tableName}";
+                case ProcedureKind.Update:
+                    return $"usp_{databaseName}_Update{tableName}";
+                case ProcedureKind.Delete:
+                    return $"usp_{databaseName}_Delete{tableName}";
+                case ProcedureKind.Read:
+                    return $"usp_{databaseName}_Read{tableName}";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(kind));
+            }
+            
+        }
+
         public SchemaObjectName GenerateStoredProcedureName(string procedureName, Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
             SchemaObjectName objectName = new SchemaObjectName();
-            objectName.Identifiers.AddRange(ScriptFactory.Identifier(table.Schema),ScriptFactory.Identifier(procedureName, quoteType));
+            objectName.Identifiers.AddRange(ScriptFactory.Identifier(table.Schema, quoteType),ScriptFactory.Identifier(procedureName, quoteType));
             return objectName;
         }
 
@@ -146,11 +179,11 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             return false;
         }
 
-        public CreateProcedureStatement GenerateCreateStoreProcedureStatement(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        public CreateProcedureStatement GenerateCreateInsertStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
             Database database = table.Parent;
             Options options = database.Options;
-            string storedProcedureName = string.Concat(options.ProcedurePrefix, "Insert", table.Name);
+            string storedProcedureName = string.Concat(options.ProcedurePrefix,"_", "Insert", table.Name);
 
             List<ColumnReferenceExpression> columns = new List<ColumnReferenceExpression>();
             List<ScalarExpression> scalarExpressions = new List<ScalarExpression>();
@@ -166,7 +199,8 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
                     continue;
 
                 scalarExpressions.Add(
-                    ScriptFactory.IdentifierLiteral(column.Name, quoteType));
+                    ScriptFactory.IdentifierLiteral(
+                        CreateProcedureParameterVariableName(column), QuoteType.NotQuoted));
 
                 columns.Add(
                     ScriptFactory.ColumnReferenceExpression(
@@ -179,27 +213,118 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             }
             rowValue.ColumnValues.AddRange(scalarExpressions);
 
-            var statement = ScriptFactory.CreateProcedure(false, 
-                ScriptFactory.ProcedureReference(
-                    GenerateStoredProcedureName(storedProcedureName,table, quoteType)),
-                        ScriptFactory.List(
-                            ScriptFactory.BeginEndBlock(
-                                ScriptFactory.List(
+            StatementList statements = ScriptFactory.List(
                                     ScriptFactory.PredicateSet(true, SetOptions.NoCount),
                                     ScriptFactory.Insert(
                                         ScriptFactory.InsertSpecification(
-                                            ScriptFactory.ValuesInsertSource(false,rowValues), 
+                                            ScriptFactory.ValuesInsertSource(false, rowValues),
                                             ScriptFactory.NamedTableReference(
                                                 GenerateSchemaObjectName(table, quoteType)),
-                                                null,null,null,InsertOption.Into, columns)),
-                                    ScriptFactory.Return(ScriptFactory.IntegerLiteral("1"))))),null,null, parameters);
+                                                null, null, null, InsertOption.Into, columns)),
+                                    ScriptFactory.Return(ScriptFactory.IntegerLiteral("1")));
+            var statement = ScriptFactory.CreateProcedure(false,
+                ScriptFactory.ProcedureReference(
+                    GenerateStoredProcedureName(storedProcedureName, table, quoteType)),
+                        ScriptFactory.List(
+                            ScriptFactory.BeginEndBlock(statements)),null,null, parameters);
 
-            statement.StatementList
+            return statement;
         }
+
+        public CreateProcedureStatement GenerateCreateReadStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            Database database = table.Parent;
+            Options options = database.Options;
+            string storedProcedureName = string.Concat(options.ProcedurePrefix, "_", "Insert", table.Name);
+
+            List<ProcedureParameter> parameters = new List<ProcedureParameter>();
+
+            //foreach (var column in table.Columns)
+            //{
+            //    parameters.Add(
+            //        ScriptFactory.ProcedureParameter(CreateProcedureParameterVariableName(column), false,
+            //            GenerateDataTypeReference(SqlDataType.Parse(column.DataType))));
+            //}
+
+            QueryExpression e;
+            
+
+            SelectStarExpression expression = new SelectStarExpression();
+            expression.Qualifier = ScriptFactory.MultiPartIdentifier(
+                ScriptFactory.Identifier(table.Schema, quoteType),
+                ScriptFactory.Identifier(table.Name, quoteType));
+
+            SelectStatement select = new SelectStatement();
+            
+
+
+            return ScriptFactory.CreateProcedure(false,
+                ScriptFactory.ProcedureReference(
+                    GenerateStoredProcedureName(storedProcedureName, table, quoteType)),
+                        ScriptFactory.List(
+                            ScriptFactory.BeginEndBlock(), null, null));
+        }
+
 
         private static string CreateProcedureParameterVariableName(Column column)
         {
             return  "@" + CodeIdentifier.MakeCamel(column.Name);
         }
     }
+
+    public enum ProcedureKind
+    {
+        Insert,
+        Update,
+        Delete,
+        Read
+    }
+
+    public enum NameKind
+    {
+        Database,
+        Schema,
+        Table,
+        Column,
+        CheckConstraint,
+        DefaultConstraint,
+        UniqueIndex,
+        PrimaryKey,
+        ForeignKey
+    }
+
+    public static class NameFactory
+    {
+        private class NamingStrategy
+        {
+
+        }
+
+        public static string CreateTableName(Table table)
+        {
+            return "";
+        }
+
+    }
+
+    public interface INamingStrategy
+    {
+        string Database(Database database);
+        string Table(Table table);
+        string Procedure(ProcedureKind kind, Table table);
+        string Column(Column column);
+        string UniqueKey(Index index);
+        string ForeignKey(ForeignKey foreignKey);
+        string CheckConstraint(Index index);
+
+    }
+
+    //public abstract class AbstractNamingStrategy : INamingStrategy
+    //{
+
+    //}
+
+    //public sealed class PrefixBasedNamingStrategy : AbstractNamingStrategy
+    //{
+    //}
 }

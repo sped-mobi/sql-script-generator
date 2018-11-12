@@ -39,7 +39,7 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             string storedProcedureName = string.Concat(options.ProcedurePrefix, "Insert", table.Name);
             
             AddBatch(Generator.GeneratePrintStatement($"Creating insert procedure [{table.Schema}][{storedProcedureName}]"));
-            AddBatch(Generator.GenerateCreateStoreProcedureStatement(table, quoteType));
+            AddBatch(Generator.GenerateCreateInsertStoredProcedure(table, quoteType));
         }
 
         public void AddCreateTableBatches(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)

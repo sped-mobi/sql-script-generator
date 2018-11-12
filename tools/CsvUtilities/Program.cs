@@ -315,7 +315,7 @@ namespace System.Data.Csv
             {
                 return new List<PropertyInfo>(source).Last().PropertyType.TypeNameStartsWith("IList");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }

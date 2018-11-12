@@ -30,12 +30,9 @@ CREATE PROCEDURE [dbo].[usp_TAC_InsertTitle]
 )
 AS
     BEGIN
-        SET NOCOUNT ON
-        INSERT INTO [dbo].[tbl_TAC_Title] 
-                ([name], [number]) 
-        VALUES 
-                (@name, @number);
-        RETURN 1;
+         SET NOCOUNT ON;
+         SELECT * FROM dbo.Title;
+         RETURN 1;
     END
 ;
 GO
@@ -49,10 +46,9 @@ GO
                 Console.WriteLine($"{token.TokenType} `{token.Text}`");
             }
 
-            var statement = TSqlSelectVisitor.VisitCreateProcedureStatements(fragment).FirstOrDefault();
-            var beginEndBlock = statement.StatementList.Statements[0];
 
-            var parameters = TSqlSelectVisitor.VisitProcedureParameters(fragment);
+            var items = TSqlSelectVisitor.VisitSelectStatements(fragment);
+            
 
 
             Database db = Database.DeserializeFromFile(FilePath);

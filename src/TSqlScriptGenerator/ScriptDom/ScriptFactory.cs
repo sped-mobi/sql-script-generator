@@ -1756,5 +1756,7 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             retVal.QuoteType = quoteType;
             return retVal;
         }
+
+
     }
 }

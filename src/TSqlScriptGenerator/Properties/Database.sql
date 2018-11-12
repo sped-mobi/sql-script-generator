@@ -8,21 +8,39 @@
 
 PRINT ('========== Preparation ==========');
 
+GO
+
 USE [master];
+
+GO
 
 PRINT ('Dropping database [ExampleDB]');
 
+GO
+
 DROP DATABASE IF EXISTS [ExampleDB];
+
+GO
 
 PRINT ('Creating database [ExampleDB]');
 
+GO
+
 CREATE DATABASE [ExampleDB];
+
+GO
 
 USE [ExampleDB];
 
+GO
+
 PRINT ('========== Creating tables ==========');
 
+GO
+
 PRINT ('Creating table [dbo].[Chapter]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Chapter]
 (
@@ -33,7 +51,11 @@ CREATE TABLE [ExampleDB].[dbo].[Chapter]
     [number]  INT            NOT NULL
 );
 
+GO
+
 PRINT ('Creating table [dbo].[Division]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Division]
 (
@@ -44,7 +66,11 @@ CREATE TABLE [ExampleDB].[dbo].[Division]
     [number]        INT            NOT NULL
 );
 
+GO
+
 PRINT ('Creating table [dbo].[Html]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Html]
 (
@@ -53,7 +79,11 @@ CREATE TABLE [ExampleDB].[dbo].[Html]
     [html]   VARCHAR (MAX)    NULL
 );
 
+GO
+
 PRINT ('Creating table [dbo].[Part]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Part]
 (
@@ -64,7 +94,11 @@ CREATE TABLE [ExampleDB].[dbo].[Part]
     [number]   INT            NOT NULL
 );
 
+GO
+
 PRINT ('Creating table [dbo].[Rule]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Rule]
 (
@@ -77,7 +111,11 @@ CREATE TABLE [ExampleDB].[dbo].[Rule]
     [number]        DECIMAL (8, 4) NULL
 );
 
+GO
+
 PRINT ('Creating table [dbo].[Source]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Source]
 (
@@ -87,7 +125,11 @@ CREATE TABLE [ExampleDB].[dbo].[Source]
     [text]    VARCHAR (MAX) NULL
 );
 
+GO
+
 PRINT ('Creating table [dbo].[Subchapter]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Subchapter]
 (
@@ -98,7 +140,11 @@ CREATE TABLE [ExampleDB].[dbo].[Subchapter]
     [designator] VARCHAR (10)   NULL
 );
 
+GO
+
 PRINT ('Creating table [dbo].[Subsection]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Subsection]
 (
@@ -108,7 +154,11 @@ CREATE TABLE [ExampleDB].[dbo].[Subsection]
     [content]    NVARCHAR (MAX) NULL
 );
 
+GO
+
 PRINT ('Creating table [dbo].[Title]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Title]
 (
@@ -118,7 +168,11 @@ CREATE TABLE [ExampleDB].[dbo].[Title]
     [number] INT            NOT NULL
 );
 
+GO
+
 PRINT ('Creating table [dbo].[Url]');
+
+GO
 
 CREATE TABLE [ExampleDB].[dbo].[Url]
 (
@@ -130,229 +184,357 @@ CREATE TABLE [ExampleDB].[dbo].[Url]
     [index]      INT              IDENTITY (1, 1) NOT NULL
 );
 
+GO
+
 PRINT ('========== Creating Primary Keys ==========');
 
+GO
+
 PRINT ('[1 - 10] Creating primary key constraint [PK_Chapter_Id] on table [Chapter]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Chapter]
     ADD CONSTRAINT [PK_Chapter_Id] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('[2 - 10] Creating primary key constraint [PK_Division_ID] on table [Division]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Division]
     ADD CONSTRAINT [PK_Division_ID] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('[3 - 10] Creating primary key constraint [PK_Html_Id] on table [Html]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Html]
     ADD CONSTRAINT [PK_Html_Id] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('[4 - 10] Creating primary key constraint [PK_Part_ID] on table [Part]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Part]
     ADD CONSTRAINT [PK_Part_ID] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('[5 - 10] Creating primary key constraint [PK_Rule_ID] on table [Rule]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Rule]
     ADD CONSTRAINT [PK_Rule_ID] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('[6 - 10] Creating primary key constraint [PK_Source_ID] on table [Source]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Source]
     ADD CONSTRAINT [PK_Source_ID] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('[7 - 10] Creating primary key constraint [PK_Subchapter_ID] on table [Subchapter]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Subchapter]
     ADD CONSTRAINT [PK_Subchapter_ID] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('[8 - 10] Creating primary key constraint [PK_Subsection_ID] on table [Subsection]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Subsection]
     ADD CONSTRAINT [PK_Subsection_ID] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('[9 - 10] Creating primary key constraint [PK_Title_ID] on table [Title]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Title]
     ADD CONSTRAINT [PK_Title_ID] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('[10 - 10] Creating primary key constraint [PK_Url_Id] on table [Url]([id])');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Url]
     ADD CONSTRAINT [PK_Url_Id] PRIMARY KEY CLUSTERED ([id] ASC);
 
+GO
+
 PRINT ('========== Creating Froreign Keys ==========');
 
+GO
+
 PRINT ('[1  - 10] Creating foriegn key constraint [FK_Chapter_PartId]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Chapter]
     ADD CONSTRAINT [FK_Chapter_PartId] FOREIGN KEY ([part_id]) REFERENCES [ExampleDB].[dbo].[Part] ([id]);
 
+GO
+
 PRINT ('[2  - 10] Creating foriegn key constraint [FK_Division_SubchapterID]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Division]
     ADD CONSTRAINT [FK_Division_SubchapterID] FOREIGN KEY ([subchapter_id]) REFERENCES [ExampleDB].[dbo].[Subchapter] ([id]);
 
+GO
+
 PRINT ('[3  - 10] Creating foriegn key constraint [FK_Html_UrlId]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Html]
     ADD CONSTRAINT [FK_Html_UrlId] FOREIGN KEY ([url_id]) REFERENCES [ExampleDB].[dbo].[Url] ([id]);
 
+GO
+
 PRINT ('[4  - 10] Creating foriegn key constraint [FK_Part_TitleID]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Part]
     ADD CONSTRAINT [FK_Part_TitleID] FOREIGN KEY ([title_id]) REFERENCES [ExampleDB].[dbo].[Title] ([id]);
 
+GO
+
 PRINT ('[5  - 10] Creating foriegn key constraint [FK_Rule_ChapterID]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Rule]
     ADD CONSTRAINT [FK_Rule_ChapterID] FOREIGN KEY ([chapter_id]) REFERENCES [ExampleDB].[dbo].[Chapter] ([id]);
 
+GO
+
 PRINT ('[6  - 10] Creating foriegn key constraint [FK_Rule_DivisionID]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Rule]
     ADD CONSTRAINT [FK_Rule_DivisionID] FOREIGN KEY ([division_id]) REFERENCES [ExampleDB].[dbo].[Division] ([id]);
 
+GO
+
 PRINT ('[7  - 10] Creating foriegn key constraint [FK_Rule_SubchapterID]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Rule]
     ADD CONSTRAINT [FK_Rule_SubchapterID] FOREIGN KEY ([subchapter_id]) REFERENCES [ExampleDB].[dbo].[Subchapter] ([id]);
 
+GO
+
 PRINT ('[8  - 10] Creating foriegn key constraint [FK_Source_RuleID]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Source]
     ADD CONSTRAINT [FK_Source_RuleID] FOREIGN KEY ([rule_id]) REFERENCES [ExampleDB].[dbo].[Rule] ([id]);
 
+GO
+
 PRINT ('[9  - 10] Creating foriegn key constraint [FK_Subchapter_ChapterID]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Subchapter]
     ADD CONSTRAINT [FK_Subchapter_ChapterID] FOREIGN KEY ([chapter_id]) REFERENCES [ExampleDB].[dbo].[Chapter] ([id]);
 
+GO
+
 PRINT ('[10 - 10] Creating foriegn key constraint [FK_Subsection_RuleID]');
+
+GO
 
 ALTER TABLE [ExampleDB].[dbo].[Subsection]
     ADD CONSTRAINT [FK_Subsection_RuleID] FOREIGN KEY ([rule_id]) REFERENCES [ExampleDB].[dbo].[Rule] ([id]);
 
+GO
+
 PRINT ('========== Creating Insert Procedures ==========');
+
+GO
 
 PRINT ('Creating insert procedure [dbo][uspInsertChapter]');
 
-CREATE PROCEDURE dbo.[uspInsertChapter]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertChapter]
 @part_id INT, @uri VARCHAR (2000), @name VARCHAR (1000), @number INT
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Chapter] ([part_id], [uri], [name], [number])
-    VALUES                                  ([part_id], [uri], [name], [number]);
+    VALUES                                  (@part_id, @uri, @name, @number);
     RETURN 1;
 END
 
+GO
+
 PRINT ('Creating insert procedure [dbo][uspInsertDivision]');
 
-CREATE PROCEDURE dbo.[uspInsertDivision]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertDivision]
 @subchapter_id INT, @uri VARCHAR (2000), @name VARCHAR (1000), @number INT
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Division] ([subchapter_id], [uri], [name], [number])
-    VALUES                                   ([subchapter_id], [uri], [name], [number]);
+    VALUES                                   (@subchapter_id, @uri, @name, @number);
     RETURN 1;
 END
 
+GO
+
 PRINT ('Creating insert procedure [dbo][uspInsertHtml]');
 
-CREATE PROCEDURE dbo.[uspInsertHtml]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertHtml]
 @url_id UNIQUEIDENTIFIER, @html VARCHAR (MAX)
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Html] ([url_id], [html])
-    VALUES                               ([url_id], [html]);
+    VALUES                               (@url_id, @html);
     RETURN 1;
 END
 
+GO
+
 PRINT ('Creating insert procedure [dbo][uspInsertPart]');
 
-CREATE PROCEDURE dbo.[uspInsertPart]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertPart]
 @title_id INT, @uri VARCHAR (2000), @name VARCHAR (1000), @number INT
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Part] ([title_id], [uri], [name], [number])
-    VALUES                               ([title_id], [uri], [name], [number]);
+    VALUES                               (@title_id, @uri, @name, @number);
     RETURN 1;
 END
 
+GO
+
 PRINT ('Creating insert procedure [dbo][uspInsertRule]');
 
-CREATE PROCEDURE dbo.[uspInsertRule]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertRule]
 @division_id INT, @chapter_id INT, @subchapter_id INT, @uri VARCHAR (2000), @name VARCHAR (1000), @number DECIMAL (8, 4)
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Rule] ([division_id], [chapter_id], [subchapter_id], [uri], [name], [number])
-    VALUES                               ([division_id], [chapter_id], [subchapter_id], [uri], [name], [number]);
+    VALUES                               (@division_id, @chapter_id, @subchapter_id, @uri, @name, @number);
     RETURN 1;
 END
 
+GO
+
 PRINT ('Creating insert procedure [dbo][uspInsertSource]');
 
-CREATE PROCEDURE dbo.[uspInsertSource]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertSource]
 @rule_id INT, @note VARCHAR (MAX), @text VARCHAR (MAX)
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Source] ([rule_id], [note], [text])
-    VALUES                                 ([rule_id], [note], [text]);
+    VALUES                                 (@rule_id, @note, @text);
     RETURN 1;
 END
 
+GO
+
 PRINT ('Creating insert procedure [dbo][uspInsertSubchapter]');
 
-CREATE PROCEDURE dbo.[uspInsertSubchapter]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertSubchapter]
 @chapter_id INT, @uri VARCHAR (2000), @name VARCHAR (1000), @designator VARCHAR (10)
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Subchapter] ([chapter_id], [uri], [name], [designator])
-    VALUES                                     ([chapter_id], [uri], [name], [designator]);
+    VALUES                                     (@chapter_id, @uri, @name, @designator);
     RETURN 1;
 END
 
+GO
+
 PRINT ('Creating insert procedure [dbo][uspInsertSubsection]');
 
-CREATE PROCEDURE dbo.[uspInsertSubsection]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertSubsection]
 @rule_id INT, @identifier VARCHAR (10), @content NVARCHAR (MAX)
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Subsection] ([rule_id], [identifier], [content])
-    VALUES                                     ([rule_id], [identifier], [content]);
+    VALUES                                     (@rule_id, @identifier, @content);
     RETURN 1;
 END
 
+GO
+
 PRINT ('Creating insert procedure [dbo][uspInsertTitle]');
 
-CREATE PROCEDURE dbo.[uspInsertTitle]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertTitle]
 @uri VARCHAR (2000), @name VARCHAR (1000), @number INT
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Title] ([uri], [name], [number])
-    VALUES                                ([uri], [name], [number]);
+    VALUES                                (@uri, @name, @number);
     RETURN 1;
 END
 
+GO
+
 PRINT ('Creating insert procedure [dbo][uspInsertUrl]');
 
-CREATE PROCEDURE dbo.[uspInsertUrl]
+GO
+
+CREATE PROCEDURE [dbo].[uspInsertUrl]
 @type CHAR (1), @uri VARCHAR (2000), @name VARCHAR (1000), @identifier SQL_VARIANT, @index INT
 AS
 BEGIN
     SET NOCOUNT ON;
     INSERT  INTO [ExampleDB].[dbo].[Url] ([type], [uri], [name], [identifier], [index])
-    VALUES                              ([type], [uri], [name], [identifier], [index]);
+    VALUES                              (@type, @uri, @name, @identifier, @index);
     RETURN 1;
 END
+
+GO
 

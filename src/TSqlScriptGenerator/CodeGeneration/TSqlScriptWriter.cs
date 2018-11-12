@@ -4,10 +4,10 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System;
 using System.CodeDom.Compiler;
 using System.IO;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace Microsoft.SqlServer.TransactSql.CodeGeneration
 {
@@ -40,22 +40,37 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
         {
             _generator.Options.KeywordCasing = casing;
 
-            
-
             WriteHeader();
 
             foreach (var batch in script.Batches)
             {
-
-
                 WriteBatch(batch);
+                Go(casing);
             }
+        }
+
+        private void Go(KeywordCasing casing)
+        {
+            switch (casing)
+            {
+                case KeywordCasing.Lowercase:
+                    _writer.WriteLine("go");
+                    break;
+                case KeywordCasing.Uppercase:
+                    _writer.WriteLine("GO");
+                    break;
+                case KeywordCasing.PascalCase:
+                    _writer.WriteLine("Go");
+                    break;
+            }
+
+            _writer.WriteLine();
         }
 
         public void WriteBatch(TSqlBatch batch)
         {
             _generator.GenerateScript(batch, _writer);
-            WriteFragment(GO());
+
         }
 
         public void WriteFragment(TSqlFragment fragment)
@@ -69,12 +84,12 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
                         WriteToken(token);
                         _writer.WriteLine();
                     }
-                    
+
                 }
-                
-                
+
+
             }
-            
+
             //_generator.GenerateScript(fragment, _writer);
         }
 
