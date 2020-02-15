@@ -3,9 +3,9 @@
 //  Copyright � 2018 <Unknown>. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
+using System.Collections.Generic;
 using DatabaseUtilities.Temp;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
-using System.Collections.Generic;
 
 namespace DatabaseUtilities.Sql
 {
@@ -22,13 +22,14 @@ namespace DatabaseUtilities.Sql
             builder.AddCreateTableBatches(database.Tables, quoteType);
             builder.AddPrimaryKeyConstraintBatches(database.Tables, quoteType);
             builder.AddForeignKeyConstraintBatches(database.Tables, quoteType);
+            builder.AddDefaultConstraintBatches(database.Tables, quoteType);
 
-            return builder;
+            return builder.ToTSqlScript();
         }
 
         public SchemaObjectName GenerateSchemaObjectName(Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
-            return ScriptFactory.FullTableName(table.Parent.DatabaseName, table.Schema, table.Name, quoteType);
+            return ScriptFactory.SchemaName(table.Name, quoteType);
         }
 
         public IEnumerable<ColumnDefinition> GenerateColumnDefinitions(Table table, QuoteType quoteType = QuoteType.NotQuoted)

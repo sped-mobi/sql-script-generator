@@ -39,7 +39,7 @@ namespace DatabaseUtilities.Sql
         {
             _generator.Options.KeywordCasing = casing;
 
-            
+
 
             WriteHeader();
 
@@ -63,9 +63,9 @@ namespace DatabaseUtilities.Sql
                 {
                     WriteToken(token);
                 }
-                
+
             }
-            
+
             //_generator.GenerateScript(fragment, _writer);
         }
 
@@ -100,33 +100,6 @@ namespace DatabaseUtilities.Sql
             WriteLine("--     the code is regenerated.");
             WriteLine("*******************************************************************************/");
             WriteLine();
-        }
-
-        private void PushIndent()
-        {
-            _writer.Indent++;
-        }
-
-        private void PopIndent()
-        {
-            _writer.Indent--;
-        }
-
-        private void OpenBlock()
-        {
-            WriteLine("{");
-            PushIndent();
-        }
-
-        private void CloseBlock()
-        {
-            PopIndent();
-            WriteLine("}");
-        }
-
-        private void Write(string value)
-        {
-            _writer.Write(value);
         }
 
         private void WriteLine(string value)

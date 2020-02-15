@@ -3,23 +3,72 @@
 //  Copyright � 2018 <Unknown>. All rights reserved.
 // </copyright>
 // -----------------------------------------------------------------------
-using DatabaseUtilities.Temp;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Collections.Generic;
 using System.Linq;
+using DatabaseUtilities.Temp;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace DatabaseUtilities.Sql
 {
+
     public class TSqlScriptBuilder
     {
         private readonly TSqlScript _script;
 
         private readonly TSqlScriptGenerator Generator;
 
+
+
         public TSqlScriptBuilder(TSqlScriptGenerator generator)
         {
             _script = new TSqlScript();
             Generator = generator;
+        }
+
+        public void AddDefaultConstraintBatches(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            var definitions = new List<TableDefaultConstraint>();
+
+            AddBatch(Generator.GeneratePrintStatement($"========== Creating Default Constraints =========="));
+            foreach (Table table in tables)
+            {
+                foreach (var column in table.Columns)
+                {
+                    if (!string.IsNullOrEmpty(column.DefaultName))
+                    {
+                        definitions.Add(new TableDefaultConstraint
+                        {
+                            Constraint = ScriptFactory.DefaultConstraintDefinition(
+                            ScriptFactory.Identifier(column.Name, quoteType),
+                            ScriptFactory.Identifier(column.DefaultName, quoteType),
+                            false,
+                            ScriptFactory.ParenthesisExpression(ScriptFactory.IntegerLiteral(column.DefaultValue))),
+                            Table = table
+                        });
+                    }
+                }
+            }
+
+            AddDefaultConstraints(definitions, quoteType);
+        }
+
+        public void AddDefaultConstraints(List<TableDefaultConstraint> definitions, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+
+            for (int i = 0; i < definitions.Count; i++)
+            {
+                var definition = definitions[i];
+                var table = definition.Table;
+                var constraint = definition.Constraint;
+                AddBatch(Generator.GeneratePrintStatement($"[{i + 1} - {definitions.Count}] Creating default constraint [{constraint.ConstraintIdentifier.Value}]"));
+                AddBatch(ScriptFactory.AlterTableAddTableElement(
+                    ScriptFactory.TableDefinition(
+                        null,
+                        null,
+                        new List<ConstraintDefinition> { constraint },
+                        null),
+                    Generator.GenerateSchemaObjectName(table, quoteType)));
+            }
         }
 
         public void AddCreateInsertProcedures(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)
@@ -34,7 +83,7 @@ namespace DatabaseUtilities.Sql
         public void AddCreateInsertProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
             Database database = table.Parent;
-            
+
             AddBatch(Generator.GeneratePrintStatement($"Creating insert procedure [{table.Name}]"));
         }
 
@@ -65,7 +114,7 @@ namespace DatabaseUtilities.Sql
             for (int i = 0; i < keys.Count; i++)
             {
                 Index key = keys[i];
-                AddBatch(Generator.GeneratePrintStatement($"[{i+1} - {keys.Count}] Creating primary key constraint [{key.Name}] on table [{key.Parent.Name}]([{key.Members.FirstOrDefault().Column}])"));
+                AddBatch(Generator.GeneratePrintStatement($"[{i + 1} - {keys.Count}] Creating primary key constraint [{key.Name}] on table [{key.Parent.Name}]([{key.Members.FirstOrDefault().Column}])"));
                 AddCreatePrimaryKeyBatch(key, quoteType);
             }
         }
@@ -85,7 +134,7 @@ namespace DatabaseUtilities.Sql
             {
                 ForeignKey key = keys[i];
                 //var pkTable = key.Parent.Parent.Tables.FirstOrDefault(t => t.Name == key.PkTable);
-                AddBatch(Generator.GeneratePrintStatement($"[{i+1,-2} - {keys.Count}] Creating foriegn key constraint [{key.Name}]"));
+                AddBatch(Generator.GeneratePrintStatement($"[{i + 1,-2} - {keys.Count}] Creating foriegn key constraint [{key.Name}]"));
                 AddCreateForeignKeyBatch(key, quoteType);
             }
         }
@@ -117,7 +166,7 @@ namespace DatabaseUtilities.Sql
 
         public void AddCreatePrimaryKeyBatch(Index index, QuoteType quoteType = QuoteType.NotQuoted)
         {
-            
+
             List<ColumnWithSortOrder> columns = new List<ColumnWithSortOrder>();
 
 

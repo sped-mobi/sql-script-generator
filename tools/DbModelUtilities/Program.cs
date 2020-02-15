@@ -6,69 +6,53 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using DatabaseUtilities.Temp;
-using DatabaseUtilities.Sql;
-using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Windows;
+using DatabaseUtilities.Sql;
+using DatabaseUtilities.Temp;
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 
 namespace DatabaseUtilities
 {
     public static class Program
     {
-        private const string FilePath = @"C:\stage\src\sandbox\TAC\tools\DbModelUtilities\Temp\Database.xml";
+        private const string FilePath = @"C:\Users\bmarshall\Source\Repos\sql-script-generator\tools\DbModelUtilities\Temp\Database.xml";
 
         [STAThread]
         public static void Main()
         {
-            var query = @"
-CREATE PROCEDURE [dbo].[usp_TAC_InsertTitle]
-(
-    @name varchar(1000),
-    @number int
-)
-AS
-    BEGIN
-         SET NOCOUNT ON;
-         SELECT * FROM dbo.Title;
-         RETURN 1;
-    END
-;
-GO
-";
-            var parser = new TSql150Parser(true, SqlEngineType.Standalone);
+            //var parser = new TSql150Parser(true, SqlEngineType.Standalone);
 
-            var fragment = parser.Parse(new StringReader(query), out IList<ParseError> errors);
+            //var fragment = parser.Parse(new StringReader(query), out IList<ParseError> errors);
 
-            foreach (var token in fragment.ScriptTokenStream)
-            {
-                Console.WriteLine($"{token.TokenType} `{token.Text}`");
-            }
+            //foreach (var token in fragment.ScriptTokenStream)
+            //{
+            //    Console.WriteLine($"{token.TokenType} `{token.Text}`");
+            //}
 
 
-            var items = TSqlSelectVisitor.VisitSelectStatements(fragment);
-            
+            //var items = TSqlSelectVisitor.VisitSelectStatements(fragment);
+
 
 
             Database db = Database.DeserializeFromFile(FilePath);
 
-            //TSqlScriptGenerator generator = new TSqlScriptGenerator();
+            TSqlScriptGenerator generator = new TSqlScriptGenerator();
 
-            //TSqlScript script = generator.GenerateScript(db, QuoteType.SquareBracket);
+            TSqlScript script = generator.GenerateScript(db, QuoteType.SquareBracket);
 
-            //StringBuilder sb = new StringBuilder();
-            //using (var sw = new StringWriter(sb))
-            //using (TSqlScriptWriter writer = new TSqlScriptWriter(sw, Generator))
-            //{
-            //    writer.WriteScript(script, KeywordCasing.Uppercase);
-            //}
+            StringBuilder sb = new StringBuilder();
+            using (var sw = new StringWriter(sb))
+            using (TSqlScriptWriter writer = new TSqlScriptWriter(sw, Generator))
+            {
+                writer.WriteScript(script, KeywordCasing.Uppercase);
+            }
 
-            //Clipboard.SetText(sb.ToString());
+            Clipboard.SetText(sb.ToString());
 
-            //Console.WriteLine(sb);
+            Console.WriteLine(sb);
 
-            //Console.ReadKey();
+            Console.ReadKey();
         }
 
         private static Sql150ScriptGenerator Generator

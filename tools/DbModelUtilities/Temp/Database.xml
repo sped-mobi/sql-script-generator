@@ -1,6 +1,92 @@
-﻿<!--
-Sample license text.
--->
+﻿<Database DatabaseName="BePro_DB" Version="1">
+  <Schemas>
+  </Schemas>
+  <Tables>
+    <Table Name="Student" Schema="dbo">
+      <Columns>
+        <Column Name="ID" DataType="INT" IsIdentity="true" IdentitySeed="1" IdentityIncrement="1" AllowNulls="false" />
+        <Column Name="FirstName" DataType="VARCHAR(100)" AllowNulls="false" />
+        <Column Name="LastName" DataType="VARCHAR(100)" AllowNulls="false" />
+        <Column Name="DistrictID" DataType="INT" AllowNulls="false" />
+        <Column Name="GradeLevel" DataType="VARCHAR(10)" AllowNulls="false" />
+        <Column Name="PrimaryDisability" DataType="VARCHAR(100)" AllowNulls="true"/>
+        <Column Name="PrimaryBehavior" DataType="VARCHAR(1000)" AllowNulls="true"/>
+        <Column Name="SecondaryBehavior" DataType="VARCHAR(1000)" AllowNulls="true"/>
+        <Column Name="TertiaryBehavior" DataType="VARCHAR(1000)" AllowNulls="true"/>
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Student_ID" IsClustered="true" IsPrimary="true">
+          <Members>
+            <Member Column="ID" IsIncluded="true" />
+          </Members>
+        </Index>
+      </Indexes>
+    </Table>
+    <Table Name="Goal" Schema="dbo">
+      <Columns>
+        <Column Name="ID" DataType="INT" IsIdentity="true" IdentitySeed="1" IdentityIncrement="1" AllowNulls="false" />
+        <Column Name="StudentID" DataType="INT" AllowNulls="true" />
+        <Column Name="Number" DataType="INT" AllowNulls="true" />
+        <Column Name="Focus" DataType="VARCHAR(100)" AllowNulls="true" />
+        <Column Name="TimeFrame" DataType="VARCHAR(1000)" AllowNulls="true" />
+        <Column Name="Condition" DataType="VARCHAR(1000)" AllowNulls="true" />
+        <Column Name="Behavior" DataType="VARCHAR(1000)" AllowNulls="true" />
+        <Column Name="Criteria" DataType="VARCHAR(1000)" AllowNulls="true" />
+        <Column Name="IsAcademic" DataType="BIT" AllowNulls="false"  DefaultName="DF_Goal_IsAcademic" DefaultValue="0"/>
+        <Column Name="IsFunctional" DataType="BIT" AllowNulls="false"  DefaultName="DF_Goal_IsFunctional" DefaultValue="0"/>
+        <Column Name="IsTransitional" DataType="BIT" AllowNulls="false"  DefaultName="DF_Goal_IsTransitional" DefaultValue="0"/>
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Goal_ID" IsClustered="true" IsPrimary="true">
+          <Members>
+            <Member Column="ID" IsIncluded="true" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_Goal_StudentID" PkTable="Student" PkTableSchema="dbo">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="StudentID" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+    <Table Name="Objective" Schema="dbo">
+      <Columns>
+        <Column Name="ID" DataType="INT" IsIdentity="true" IdentitySeed="1" IdentityIncrement="1" AllowNulls="false" />
+        <Column Name="GoalID" DataType="INT" AllowNulls="true" />
+        <Column Name="Number" DataType="INT" AllowNulls="true" />
+        <Column Name="TimeFrame" DataType="VARCHAR(1000)" AllowNulls="true" />
+        <Column Name="Condition" DataType="VARCHAR(1000)" AllowNulls="true" />
+        <Column Name="Behavior" DataType="VARCHAR(1000)" AllowNulls="true" />
+        <Column Name="Criteria" DataType="VARCHAR(1000)" AllowNulls="true" />
+        <Column Name="IsAcademic" DataType="BIT" AllowNulls="false"  DefaultName="DF_Objective_IsAcademic" DefaultValue="0"/>
+        <Column Name="IsFunctional" DataType="BIT" AllowNulls="false"  DefaultName="DF_Objective_IsFunctional" DefaultValue="0"/>
+        <Column Name="IsTransitional" DataType="BIT" AllowNulls="false"  DefaultName="DF_Objective_IsTransitional" DefaultValue="0"/>
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Objective_ID" IsClustered="true" IsPrimary="true">
+          <Members>
+            <Member Column="ID" IsIncluded="true" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_Objective_GoalID" PkTable="Goal" PkTableSchema="dbo">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="GoalID" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+  </Tables>
+
+</Database>
+
+
+
+
+<!--
 <Database Version="2"  DatabaseName="ExampleDB">
   <Schemas>
     <Schema Name="dbo" DbDefault="1" />
@@ -18,243 +104,244 @@ Sample license text.
   <Tables>
     <Table Schema="dbo" Name="tbl_TAC_Chapter">
       <Columns>
-        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
-        <Column Name="part_id" Position="2" DataType="int" />
-        <Column Name="uri" Position="3" DataType="varchar(2000)" />
-        <Column Name="name" Position="4" DataType="varchar(1000)" />
-        <Column Name="number" Position="5" DataType="int" />
+        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1"  DataType="int" />
+        <Column Name="part_id"  DataType="int" />
+        <Column Name="uri"  DataType="varchar(2000)" />
+        <Column Name="name"  DataType="varchar(1000)" />
+        <Column Name="number"  DataType="int" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Chapter_Id" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
       <ForeignKeys>
         <ForeignKey Name="FK_tbl_TAC_Chapter_PartId" PkTableSchema="dbo" PkTable="tbl_TAC_Part">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="part_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="part_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>
     </Table>
     <Table Schema="dbo" Name="tbl_TAC_Division">
       <Columns>
-        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
-        <Column Name="subchapter_id" Position="2" DataType="int" />
-        <Column Name="uri" Position="3" DataType="varchar(2000)" />
-        <Column Name="name" Position="4" DataType="varchar(1000)" />
-        <Column Name="number" Position="5" DataType="int" />
+        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1"  DataType="int" />
+        <Column Name="subchapter_id"  DataType="int" />
+        <Column Name="uri"  DataType="varchar(2000)" />
+        <Column Name="name"  DataType="varchar(1000)" />
+        <Column Name="number"  DataType="int" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Division_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
       <ForeignKeys>
         <ForeignKey Name="FK_tbl_TAC_Division_SubchapterID" PkTableSchema="dbo" PkTable="tbl_TAC_Subchapter">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="subchapter_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="subchapter_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>
     </Table>
     <Table Schema="dbo" Name="tbl_TAC_Html">
       <Columns>
-        <Column Name="id" Position="1" DataType="uniqueidentifier" RowGuid="1" DefaultName="DF_tbl_TAC_Html_Id"
+        <Column Name="id"  DataType="uniqueidentifier" RowGuid="1" DefaultName="DF_tbl_TAC_Html_Id"
                 DefaultValue="(newsequentialid())" />
-        <Column Name="url_id" Position="2" DataType="uniqueidentifier" />
-        <Column Name="html" AllowNulls="1" Position="3" DataType="varchar(MAX)" />
+        <Column Name="url_id"  DataType="uniqueidentifier" />
+        <Column Name="html" AllowNulls="1"  DataType="varchar(MAX)" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Html_Id" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
       <ForeignKeys>
         <ForeignKey Name="FK_tbl_TAC_Html_UrlId" PkTableSchema="dbo" PkTable="tbl_TAC_Url">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="url_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="url_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>
     </Table>
     <Table Schema="dbo" Name="tbl_TAC_Part">
       <Columns>
-        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
-        <Column Name="title_id" Position="2" DataType="int" />
-        <Column Name="uri" Position="3" DataType="varchar(2000)" />
-        <Column Name="name" Position="4" DataType="varchar(1000)" />
-        <Column Name="number" Position="5" DataType="int" />
+        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1"  DataType="int" />
+        <Column Name="title_id"  DataType="int" />
+        <Column Name="uri"  DataType="varchar(2000)" />
+        <Column Name="name"  DataType="varchar(1000)" />
+        <Column Name="number"  DataType="int" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Part_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
         <Index Name="UQ_tbl_TAC_Part_Name" IsUnique="1" IsUniqueConstraint="1">
           <Members>
-            <Member Column="name" Position="1" IsIncluded="0" />
+            <Member Column="name"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
       <ForeignKeys>
         <ForeignKey Name="FK_tbl_TAC_Part_TitleID" PkTableSchema="dbo" PkTable="tbl_TAC_Title">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="title_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="title_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>
     </Table>
     <Table Schema="dbo" Name="tbl_TAC_Rule">
       <Columns>
-        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
-        <Column Name="division_id" AllowNulls="1" Position="2" DataType="int" />
-        <Column Name="chapter_id" AllowNulls="1" Position="3" DataType="int" />
-        <Column Name="subchapter_id" AllowNulls="1" Position="4" DataType="int" />
-        <Column Name="uri" AllowNulls="1" Position="5" DataType="varchar(2000)" />
-        <Column Name="name" AllowNulls="1" Position="6" DataType="varchar(1000)" />
-        <Column Name="number" AllowNulls="1" Position="7" DataType="decimal(8,4)" />
+        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1"  DataType="int" />
+        <Column Name="division_id" AllowNulls="1"  DataType="int" />
+        <Column Name="chapter_id" AllowNulls="1"  DataType="int" />
+        <Column Name="subchapter_id" AllowNulls="1"  DataType="int" />
+        <Column Name="uri" AllowNulls="1"  DataType="varchar(2000)" />
+        <Column Name="name" AllowNulls="1"  DataType="varchar(1000)" />
+        <Column Name="number" AllowNulls="1"  DataType="decimal(8,4)" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Rule_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
       <ForeignKeys>
         <ForeignKey Name="FK_tbl_TAC_Rule_ChapterID" PkTableSchema="dbo" PkTable="tbl_TAC_Chapter">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="chapter_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="chapter_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
         <ForeignKey Name="FK_tbl_TAC_Rule_DivisionID" PkTableSchema="dbo" PkTable="tbl_TAC_Division">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="division_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="division_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
         <ForeignKey Name="FK_tbl_TAC_Rule_SubchapterID" PkTableSchema="dbo" PkTable="tbl_TAC_Subchapter">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="subchapter_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="subchapter_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>
     </Table>
     <Table Schema="dbo" Name="tbl_TAC_Source">
       <Columns>
-        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
-        <Column Name="rule_id" AllowNulls="1" Position="2" DataType="int" />
-        <Column Name="note" AllowNulls="1" Position="3" DataType="varchar(MAX)" />
-        <Column Name="text" AllowNulls="1" Position="4" DataType="varchar(MAX)" />
+        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1"  DataType="int" />
+        <Column Name="rule_id" AllowNulls="1"  DataType="int" />
+        <Column Name="note" AllowNulls="1"  DataType="varchar(MAX)" />
+        <Column Name="text" AllowNulls="1"  DataType="varchar(MAX)" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Source_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
       <ForeignKeys>
         <ForeignKey Name="FK_tbl_TAC_Source_RuleID" PkTableSchema="dbo" PkTable="tbl_TAC_Rule">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="rule_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="rule_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>
     </Table>
     <Table Schema="dbo" Name="tbl_TAC_Subchapter">
       <Columns>
-        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
-        <Column Name="chapter_id" AllowNulls="1" Position="2" DataType="int" />
-        <Column Name="uri" AllowNulls="1" Position="3" DataType="varchar(2000)" />
-        <Column Name="name" AllowNulls="1" Position="4" DataType="varchar(1000)" />
-        <Column Name="designator" AllowNulls="1" Position="5" DataType="varchar(10)" />
+        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1"  DataType="int" />
+        <Column Name="chapter_id" AllowNulls="1"  DataType="int" />
+        <Column Name="uri" AllowNulls="1"  DataType="varchar(2000)" />
+        <Column Name="name" AllowNulls="1"  DataType="varchar(1000)" />
+        <Column Name="designator" AllowNulls="1"  DataType="varchar(10)" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Subchapter_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
       <ForeignKeys>
         <ForeignKey Name="FK_tbl_TAC_Subchapter_ChapterID" PkTableSchema="dbo" PkTable="tbl_TAC_Chapter">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="chapter_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="chapter_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>
     </Table>
     <Table Schema="dbo" Name="tbl_TAC_Subsection">
       <Columns>
-        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
-        <Column Name="rule_id" AllowNulls="1" Position="2" DataType="int" />
-        <Column Name="identifier" AllowNulls="1" Position="3" DataType="varchar(10)" />
-        <Column Name="content" AllowNulls="1" Position="4" DataType="nvarchar(MAX)" />
+        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1"  DataType="int" />
+        <Column Name="rule_id" AllowNulls="1"  DataType="int" />
+        <Column Name="identifier" AllowNulls="1"  DataType="varchar(10)" />
+        <Column Name="content" AllowNulls="1"  DataType="nvarchar(MAX)" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Subsection_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
       <ForeignKeys>
         <ForeignKey Name="FK_tbl_TAC_Subsection_RuleID" PkTableSchema="dbo" PkTable="tbl_TAC_Rule">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="rule_id" Position="1" PkColumn="id" />
+            <ForeignKeyColumn FkColumn="rule_id"  PkColumn="id" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>
     </Table>
     <Table Schema="dbo" Name="tbl_TAC_Title">
       <Columns>
-        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
-        <Column Name="uri" Position="2" DataType="varchar(2000)" />
-        <Column Name="name" Position="3" DataType="varchar(1000)" />
-        <Column Name="number" Position="4" DataType="int" />
+        <Column Name="id" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1"  DataType="int" />
+        <Column Name="uri"  DataType="varchar(2000)" />
+        <Column Name="name"  DataType="varchar(1000)" />
+        <Column Name="number"  DataType="int" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Title_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
         <Index Name="UQ_tbl_TAC_Title_Title" IsUnique="1" IsUniqueConstraint="1">
           <Members>
-            <Member Column="name" Position="1" IsIncluded="0" />
+            <Member Column="name"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
     </Table>
     <Table Schema="dbo" Name="tbl_TAC_Url">
       <Columns>
-        <Column Name="id" Position="1" DataType="uniqueidentifier" RowGuid="1" DefaultName="DF_tbl_TAC_Url_Id" DefaultValue="(newsequentialid())" />
-        <Column Name="type" AllowNulls="1" Position="2" DataType="char(1)" />
-        <Column Name="uri" AllowNulls="1" Position="3" DataType="varchar(2000)" />
-        <Column Name="name" AllowNulls="1" Position="4" DataType="varchar(1000)" />
-        <Column Name="identifier" AllowNulls="1" Position="5" DataType="sql_variant" />
-        <Column Name="index" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="6" DataType="int" />
+        <Column Name="id"  DataType="uniqueidentifier" RowGuid="1" DefaultName="DF_tbl_TAC_Url_Id" DefaultValue="(newsequentialid())" />
+        <Column Name="type" AllowNulls="1"  DataType="char(1)" />
+        <Column Name="uri" AllowNulls="1"  DataType="varchar(2000)" />
+        <Column Name="name" AllowNulls="1"  DataType="varchar(1000)" />
+        <Column Name="identifier" AllowNulls="1"  DataType="sql_variant" />
+        <Column Name="index" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1"  DataType="int" />
       </Columns>
       <Indexes>
         <Index Name="PK_tbl_TAC_Url_Id" IsClustered="1" IsUnique="1" IsPrimary="1">
           <Members>
-            <Member Column="id" Position="1" IsIncluded="0" />
+            <Member Column="id"  IsIncluded="0" />
           </Members>
         </Index>
         <Index Name="UQ_tbl_TAC_Url_Uri" IsUnique="1" IsUniqueConstraint="1">
           <Members>
-            <Member Column="uri" Position="1" IsIncluded="0" />
+            <Member Column="uri"  IsIncluded="0" />
           </Members>
         </Index>
       </Indexes>
     </Table>
   </Tables>
 </Database>
+-->
