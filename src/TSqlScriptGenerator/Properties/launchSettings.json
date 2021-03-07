@@ -13,7 +13,7 @@
     },
     "Generate Configuration": {
       "commandName": "Project",
-      "commandLineArgs": "generate -c \"C:\\Repos\\GitHub\\sql-script-generator\\src\\TSqlScriptGenerator\\Properties\\Database.xml\" -o \"C:\\Repos\\GitHub\\sql-script-generator\\src\\TSqlScriptGenerator\\Properties\\Database.sql\" --clip --pause"
+      "commandLineArgs": "generate -c Database.xml -o Database.sql --clip --pause"
     }
   }
 }

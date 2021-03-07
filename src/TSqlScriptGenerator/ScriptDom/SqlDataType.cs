@@ -14,7 +14,6 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
         public static SqlDataType Parse(string value)
         {
             var match = Regex.Match(value, "(?<Name>[a-zA-Z_]*)(\\((?<Parameters>.*)\\))?");
-            var match2 = Regex.Match(value, "\\((?<Parameters>.*)\\)");
             string name = match.Groups["Name"].Value.ToLower().Trim();
             string parameters = match.Groups["Parameters"].Value;
 
@@ -52,7 +51,7 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             Scale = null;
         }
 
-        public SqlDataType(SqlDataTypeOption type, int size)
+        public SqlDataType(SqlDataTypeOption type, int size) : this()
         {
             Type = type;
             IsMax = false;
@@ -60,7 +59,7 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             Scale = null;
         }
 
-        public SqlDataType(SqlDataTypeOption type, int size, int scale)
+        public SqlDataType(SqlDataTypeOption type, int size, int scale) : this()
         {
             Type = type;
             IsMax = false;
@@ -78,7 +77,10 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
 
         public bool Equals(SqlDataType other)
         {
-            return Type == other.Type && IsMax == other.IsMax && Size == other.Size && Scale == other.Scale;
+            return Type == other.Type && 
+                IsMax == other.IsMax && 
+                Size == other.Size && 
+                Scale == other.Scale;
         }
 
         public override bool Equals(object obj)

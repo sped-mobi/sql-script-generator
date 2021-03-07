@@ -12,6 +12,7 @@ using System.Text;
 using Microsoft.SqlServer.TransactSql.CodeGeneration;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System.Windows;
+using System.Diagnostics;
 
 namespace Microsoft.SqlServer.TransactSql
 {
@@ -51,6 +52,7 @@ namespace Microsoft.SqlServer.TransactSql
                             Database database = Database.DeserializeFromFile(configOption.Value());
 
                             TSqlScriptGenerator generator = new TSqlScriptGenerator();
+                            
 
                             TSqlScript script = generator.GenerateScript(database, QuoteType.SquareBracket);
 
@@ -81,6 +83,8 @@ namespace Microsoft.SqlServer.TransactSql
                 });
 
             app.Execute(args);
+
+            Process.Start("notepad.exe", "Database.sql");
 
         }
 

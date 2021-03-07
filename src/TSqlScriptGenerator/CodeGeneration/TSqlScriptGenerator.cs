@@ -26,7 +26,9 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             builder.AddCreateTableBatches(database.Tables, quoteType);
             builder.AddPrimaryKeyConstraintBatches(database.Tables, quoteType);
             builder.AddForeignKeyConstraintBatches(database.Tables, quoteType);
-            builder.AddCreateInsertProcedures(database.Tables, quoteType);
+            builder.AddInsertProcedures(database.Tables, quoteType);
+            builder.AddReadProcedures(database.Tables, quoteType);
+            builder.AddAddFindProcedures(database.Tables, quoteType);
 
             return builder;
         }
@@ -36,36 +38,19 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             return ScriptFactory.FullTableName(table.Parent.DatabaseName, table.Schema, table.Name, quoteType);
         }
 
+        public SchemaObjectName GenerateSchemaObjectName(Column column, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            var retVal = new SchemaObjectName();
+            retVal.Identifiers.Add(ScriptFactory.Identifier(column.Parent.Name, quoteType));
+            retVal.Identifiers.Add(ScriptFactory.Identifier(column.Name, quoteType));
+            return retVal;
+        }
+
         public SchemaObjectName GenerateSchemaAndIdentifierName(string schemaName, string identifierName, QuoteType quoteType = QuoteType.NotQuoted)
         {
             SchemaObjectName objectName = new SchemaObjectName();
             objectName.Identifiers.AddRange(ScriptFactory.Identifier(schemaName, quoteType), ScriptFactory.Identifier(identifierName, quoteType));
             return objectName;
-        }
-
-        public SchemaObjectName GenerateProcedureName(ProcedureKind kind, string databaseName, string tableName, QuoteType quoteType = QuoteType.NotQuoted)
-        {
-            SchemaObjectName objectName = new SchemaObjectName();
-            objectName.Identifiers.AddRange(ScriptFactory.Identifier(tableName, quoteType));
-            return objectName;
-        }
-
-        private static string CreateProcedureNameString(ProcedureKind kind, string databaseName, string tableName)
-        {
-            switch (kind)
-            {
-                case ProcedureKind.Insert:
-                    return $"usp_{databaseName}_Insert{tableName}";
-                case ProcedureKind.Update:
-                    return $"usp_{databaseName}_Update{tableName}";
-                case ProcedureKind.Delete:
-                    return $"usp_{databaseName}_Delete{tableName}";
-                case ProcedureKind.Read:
-                    return $"usp_{databaseName}_Read{tableName}";
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(kind));
-            }
-            
         }
 
         public SchemaObjectName GenerateStoredProcedureName(string procedureName, Table table, QuoteType quoteType = QuoteType.NotQuoted)
@@ -89,15 +74,11 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
                 }
                 else if (column.RowGuid)
                 {
-
-
                     if (!string.IsNullOrEmpty(column.DefaultValue))
                     {
                         ColumnDefinition rowGuidCol = ScriptFactory.ColumnDefinition(column.Name, column.DefaultValue, column.DefaultName, dataType, column.AllowNulls, column.RowGuid, quoteType);
                         columns.Add(rowGuidCol);
                     }
-
-
                 }
                 else
                 {
@@ -179,11 +160,10 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             return false;
         }
 
-        public CreateProcedureStatement GenerateCreateInsertStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        public CreateProcedureStatement GenerateInsertStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
             Database database = table.Parent;
-            Options options = database.Options;
-            string storedProcedureName = string.Concat(options.ProcedurePrefix,"_", "Insert", table.Name);
+            string storedProcedureName = string.Concat("Insert", table.Name);
 
             List<ColumnReferenceExpression> columns = new List<ColumnReferenceExpression>();
             List<ScalarExpression> scalarExpressions = new List<ScalarExpression>();
@@ -231,44 +211,78 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             return statement;
         }
 
-        public CreateProcedureStatement GenerateCreateReadStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        public CreateProcedureStatement GenerateFindStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
             Database database = table.Parent;
-            Options options = database.Options;
-            string storedProcedureName = string.Concat(options.ProcedurePrefix, "_", "Insert", table.Name);
-
-            List<ProcedureParameter> parameters = new List<ProcedureParameter>();
-
-            //foreach (var column in table.Columns)
-            //{
-            //    parameters.Add(
-            //        ScriptFactory.ProcedureParameter(CreateProcedureParameterVariableName(column), false,
-            //            GenerateDataTypeReference(SqlDataType.Parse(column.DataType))));
-            //}
-
-            QueryExpression e;
-            
-
-            SelectStarExpression expression = new SelectStarExpression();
-            expression.Qualifier = ScriptFactory.MultiPartIdentifier(
-                ScriptFactory.Identifier(table.Schema, quoteType),
-                ScriptFactory.Identifier(table.Name, quoteType));
-
-            SelectStatement select = new SelectStatement();
-            
+            var pkColumn = GetPrimaryKeyColumnName(table);
+            var columnNames = GetColumnNamesWithoutPrimaryKey(table, pkColumn);
+            var pkDataType = table.Columns.Single(x => x.Name == pkColumn).DataType.ToSqlDataTypeOption();
+            string storedProcedureName = string.Concat("Find", table.Name);
+            var parameters = new List<ProcedureParameter>();
+            parameters.Add(ScriptFactory.ProcedureParameter(
+                              ScriptFactory.Identifier(MakeVariableName(pkColumn)),
+                              false,
+                              ScriptFactory.SqlDataType(pkDataType)));
 
 
-            return ScriptFactory.CreateProcedure(false,
+
+            StatementList statements = ScriptFactory.List(
+                                        ScriptFactory.Select(
+                                            default(Identifier),
+                                            ScriptFactory.Query(
+                                                ScriptFactory.From(ScriptFactory.NamedTableReference(GenerateSchemaObjectName(table, quoteType))),
+                                                ScriptFactory.Where(ScriptFactory.BooleanEqualsComparison(ScriptFactory.IdentifierLiteral(pkColumn, quoteType), ScriptFactory.VariableReference(pkColumn))),
+                                                ScriptFactory.TopRowFilter(false, false, ScriptFactory.IntegerLiteral("1")),
+                                                ScriptFactory.ElementList(columnNames.Select(x => ScriptFactory.SelectScalarExpression(x, quoteType)))
+                                            )
+                                        )
+                                       );
+            var statement = ScriptFactory.CreateProcedure(false,
                 ScriptFactory.ProcedureReference(
                     GenerateStoredProcedureName(storedProcedureName, table, quoteType)),
                         ScriptFactory.List(
-                            ScriptFactory.BeginEndBlock(), null, null));
+                            ScriptFactory.BeginEndBlock(statements)), null, null, parameters);
+
+            return statement;
         }
+
+        private string GetPrimaryKeyColumnName(Table table)
+        {
+            return table.Columns.Single(x => IsPrimaryKey(x)).Name;
+        }
+
+        public CreateProcedureStatement GenerateReadStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            var pkColumn = table.Indexes.SingleOrDefault(x => x.IsPrimary).Name;
+            var columnNames = GetColumnNamesWithoutPrimaryKey(table, pkColumn);
+
+            Database database = table.Parent;
+            string storedProcedureName = string.Concat("Read", table.Name);
+            StatementList statements = ScriptFactory.List(
+                                        ScriptFactory.Select(default(Identifier),
+                                            ScriptFactory.Query(
+                                                ScriptFactory.From(ScriptFactory.NamedTableReference(GenerateSchemaObjectName(table, quoteType))),
+                                                 ScriptFactory.ElementList(columnNames.Select(x => ScriptFactory.SelectScalarExpression(x, quoteType))))));
+            var statement = ScriptFactory.CreateProcedure(false,
+                ScriptFactory.ProcedureReference(
+                    GenerateStoredProcedureName(storedProcedureName, table, quoteType)),
+                        ScriptFactory.List(
+                            ScriptFactory.BeginEndBlock(statements)), null, null, null);
+
+            return statement;
+        }
+
+        private static IEnumerable<string> GetColumnNamesWithoutPrimaryKey(Table table, string pkColumn)
+        {
+            return table.Columns.Where(x => x.Name != pkColumn).Select(x => x.Name);
+        }
+
+        private static string MakeVariableName(string name) => "@" + name;
 
 
         private static string CreateProcedureParameterVariableName(Column column)
         {
-            return  "@" + CodeIdentifier.MakeCamel(column.Name);
+            return MakeVariableName(column.Name);
         }
     }
 
@@ -293,18 +307,42 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
         ForeignKey
     }
 
-    public static class NameFactory
+    public class NameStrategy : INamingStrategy
     {
-        private class NamingStrategy
+        public string CheckConstraint(Index index)
         {
-
+            throw new NotImplementedException();
         }
 
-        public static string CreateTableName(Table table)
+        public string Column(Column column)
         {
-            return "";
+            throw new NotImplementedException();
         }
 
+        public string Database(Database database)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string ForeignKey(ForeignKey foreignKey)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Procedure(ProcedureKind kind, Table table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Table(Table table)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string UniqueKey(Index index)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public interface INamingStrategy

@@ -1,83 +1,103 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<!--
-Sample license text.
--->
-
 <xs:schema
   attributeFormDefault="unqualified"
   elementFormDefault="qualified"
   xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-  <!--<xs:element name="StoredProcedures" type="StoredProcedures" />
-  <xs:complexType name="StoredProcedures">
-    <xs:sequence>
-      <xs:element ref="StoredProcedure" minOccurs="0" maxOccurs="unbounded" />
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:element name="StoredProcedure" type="StoredProcedure" />
-  <xs:complexType name="StoredProcedure">
-    <xs:sequence>
-      <xs:element ref="StoredProcedureParameters" minOccurs="0" />
-    </xs:sequence>
-    <xs:attribute name="Schema" type="xs:string" />
-    <xs:attribute name="Name" type="xs:string" />
-  </xs:complexType>
-
-  <xs:element name="StoredProcedureParameters" type="StoredProcedureParameters" />
-  <xs:complexType name="StoredProcedureParameters">
-    <xs:sequence>
-      <xs:element ref="StoredProcedureParameter" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:element name="StoredProcedureParameter" type="StoredProcedureParameter" />
-  <xs:complexType name="StoredProcedureParameter">
-    <xs:sequence>
-      
-    </xs:sequence>
-  </xs:complexType>-->
-
-  <xs:element name="Procedures" type="Procedures" />
-  <xs:complexType name="Procedures">
-    <xs:sequence>
-
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:element name="Procedure" type="Procedure" />
-  <xs:complexType name="Procedure">
-    <xs:sequence>
-
-    </xs:sequence>
-    <xs:attribute name="Name" type="xs:string" />
-    <xs:attribute name="Type" type="ProcedureType" />
-  </xs:complexType>
+  <xs:element name="NewLineBeforeOffsetClause" type="xs:boolean" />
+  <xs:element name="MultilineInsertSourcesList" type="xs:boolean" />
+  <xs:element name="MultilineInsertTargetsList" type="xs:boolean" />
+  <xs:element name="MultilineSetClauseItems" type="xs:boolean" />
+  <xs:element name="AlignSetClauseItem" type="xs:boolean" />
+  <xs:element name="IndentSetClause" type="xs:boolean" />
+  <xs:element name="AsKeywordOnOwnLine" type="xs:boolean" />
+  <xs:element name="MultilineViewColumnsList" type="xs:boolean" />
+  <xs:element name="IndentViewBody" type="xs:boolean" />
+  <xs:element name="MultilineWherePredicatesList" type="xs:boolean" />
+  <xs:element name="MultilineSelectElementsList" type="xs:boolean" />
+  <xs:element name="AlignClauseBodies" type="xs:boolean" />
+  <xs:element name="NewLineBeforeOutputClause" type="xs:boolean" />
+  <xs:element name="NewLineBeforeCloseParenthesisInMultilineList" type="xs:boolean" />
+  <xs:element name="NewLineBeforeJoinClause" type="xs:boolean" />
+  <xs:element name="NewLineBeforeHavingClause" type="xs:boolean" />
+  <xs:element name="NewLineBeforeOrderByClause" type="xs:boolean" />
+  <xs:element name="NewLineBeforeGroupByClause" type="xs:boolean" />
+  <xs:element name="NewLineBeforeWhereClause" type="xs:boolean" />
+  <xs:element name="NewLineBeforeFromClause" type="xs:boolean" />
+  <xs:element name="AlignColumnDefinitionFields" type="xs:boolean" />
+  <xs:element name="IncludeSemicolons" type="xs:boolean" />
+  <xs:element name="IndentationSize" type="xs:int" />
+  <xs:element name="SqlEngineType" type="SqlEngineType" />
+  <xs:element name="SqlVersion" type="SqlVersion" />
+  <xs:element name="KeywordCasing" type="KeywordCasing" />
+  <xs:element name="NewLineBeforeOpenParenthesisInMultilineList" type="xs:boolean" />
 
 
-  <xs:simpleType name="ProcedureType">
+
+  <xs:simpleType name="SqlEngineType">
     <xs:restriction base="xs:string">
-      <xs:enumeration value="Insert"/>
-      <xs:enumeration value="Update"/>
-      <xs:enumeration value="Delete"/>
-      <xs:enumeration value="Read"/>
+      <xs:enumeration value="All"/>
+      <xs:enumeration value="SqlAzure"/>
+      <xs:enumeration value="Standalone"/>
     </xs:restriction>
   </xs:simpleType>
 
-  <xs:element name="Options" type="Options">
-    <xs:annotation>
-      <xs:documentation>
-        Represents a collection of options.
-      </xs:documentation>
-    </xs:annotation>
-  </xs:element>
-  <xs:complexType name="Options">
+  <xs:simpleType name="SqlVersion">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Sql80"/>
+      <xs:enumeration value="Sql90"/>
+      <xs:enumeration value="Sql00"/>
+      <xs:enumeration value="Sql110"/>
+      <xs:enumeration value="Sql120"/>
+      <xs:enumeration value="Sql130"/>
+      <xs:enumeration value="Sql140"/>
+      <xs:enumeration value="Sql150"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="KeywordCasing">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Lowercase"/>
+      <xs:enumeration value="Uppercase"/>
+      <xs:enumeration value="Pascalcase"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+
+  <xs:element name="GenerationOptions" type="GenerationOptions" />
+
+  <xs:complexType name="GenerationOptions">
     <xs:sequence>
-      <xs:element name="ProcedurePrefix" type="xs:string" />
-      <xs:element name="TablePrefix" type="xs:string" />
-      <xs:element name="ViewPrefix" type="xs:string" />
+      <xs:element ref="AlignClauseBodies" minOccurs="0" />
+      <xs:element ref="AlignColumnDefinitionFields" minOccurs="0" />
+      <xs:element ref="AlignSetClauseItem" minOccurs="0" />
+      <xs:element ref="AsKeywordOnOwnLine" minOccurs="0" />
+      <xs:element ref="IncludeSemicolons" minOccurs="0" />
+      <xs:element ref="IndentationSize" minOccurs="0" />
+      <xs:element ref="IndentSetClause" minOccurs="0" />
+      <xs:element ref="IndentViewBody" minOccurs="0" />
+      <xs:element ref="KeywordCasing" minOccurs="0" />
+      <xs:element ref="MultilineInsertSourcesList" minOccurs="0" />
+      <xs:element ref="MultilineInsertTargetsList" minOccurs="0" />
+      <xs:element ref="MultilineSelectElementsList" minOccurs="0" />
+      <xs:element ref="MultilineSetClauseItems" minOccurs="0" />
+      <xs:element ref="MultilineViewColumnsList" minOccurs="0" />
+      <xs:element ref="MultilineWherePredicatesList" minOccurs="0" />
+      <xs:element ref="NewLineBeforeCloseParenthesisInMultilineList" minOccurs="0" />
+      <xs:element ref="NewLineBeforeFromClause" minOccurs="0" />
+      <xs:element ref="NewLineBeforeGroupByClause" minOccurs="0" />
+      <xs:element ref="NewLineBeforeHavingClause" minOccurs="0" />
+      <xs:element ref="NewLineBeforeJoinClause" minOccurs="0" />
+      <xs:element ref="NewLineBeforeOffsetClause" minOccurs="0" />
+      <xs:element ref="NewLineBeforeOpenParenthesisInMultilineList" minOccurs="0" />
+      <xs:element ref="NewLineBeforeOrderByClause" minOccurs="0" />
+      <xs:element ref="NewLineBeforeOutputClause" minOccurs="0" />
+      <xs:element ref="NewLineBeforeWhereClause" minOccurs="0" />
+      <xs:element ref="SqlEngineType" minOccurs="0" />
+      <xs:element ref="SqlVersion" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>
+
 
   <xs:element name="Schemas" type="Schemas">
     <xs:annotation>
@@ -231,7 +251,6 @@ Sample license text.
 
   <xs:simpleType name="SqlType">
     <xs:restriction base="xs:string">
-      <!--<xs:pattern value="[a-z]+(\(([0-9]*(, ?[0-9]*)?|MAX)\))?" />-->
       <xs:enumeration value="tinyint" />
       <xs:enumeration value="smallint" />
       <xs:enumeration value="bigint" />

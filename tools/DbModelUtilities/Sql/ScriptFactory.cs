@@ -3019,6 +3019,7 @@ namespace DatabaseUtilities.Sql
             }
         }
 
+
         public static SchemaObjectName SchemaName(string schema, QuoteType quoteType = QuoteType.NotQuoted)
         {
             return SchemaName(Identifier(schema, quoteType));

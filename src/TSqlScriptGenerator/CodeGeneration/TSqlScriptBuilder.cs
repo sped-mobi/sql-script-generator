@@ -23,23 +23,57 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             Generator = generator;
         }
 
-        public void AddCreateInsertProcedures(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)
+        public void AddAddFindProcedures(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            AddBatch(Generator.GeneratePrintStatement($"========== Creating Find Procedures =========="));
+            foreach (Table table in tables)
+            {
+                AddFindProcedure(table, quoteType);
+            }
+        }
+
+        public void AddInsertProcedures(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)
         {
             AddBatch(Generator.GeneratePrintStatement($"========== Creating Insert Procedures =========="));
             foreach (Table table in tables)
             {
-                AddCreateInsertProcedure(table, quoteType);
+                AddInsertProcedure(table, quoteType);
             }
         }
 
-        public void AddCreateInsertProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        public void AddReadProcedures(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            AddBatch(Generator.GeneratePrintStatement($"========== Creating Read Procedures =========="));
+            foreach (Table table in tables)
+            {
+                AddReadProcedure(table, quoteType);
+            }
+        }
+
+        public void AddFindProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
             Database database = table.Parent;
-            Options options = database.Options;
-            string storedProcedureName = string.Concat(options.ProcedurePrefix, "Insert", table.Name);
-            
-            AddBatch(Generator.GeneratePrintStatement($"Creating insert procedure [{table.Schema}][{storedProcedureName}]"));
-            AddBatch(Generator.GenerateCreateInsertStoredProcedure(table, quoteType));
+            string storedProcedureName = string.Concat("Find", table.Name);
+
+            AddBatch(Generator.GeneratePrintStatement($"Creating procedure {storedProcedureName}..."));
+            AddBatch(Generator.GenerateFindStoredProcedure(table, quoteType));
+        }
+
+        public void AddInsertProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            Database database = table.Parent;
+            string storedProcedureName = string.Concat("Insert", table.Name);
+
+            AddBatch(Generator.GeneratePrintStatement($"Creating procedure {storedProcedureName}..."));
+            AddBatch(Generator.GenerateInsertStoredProcedure(table, quoteType));
+        }
+
+        public void AddReadProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            Database database = table.Parent;
+            string storedProcedureName = string.Concat("Read", table.Name);
+            AddBatch(Generator.GeneratePrintStatement($"Creating procedure {storedProcedureName}..."));
+            AddBatch(Generator.GenerateReadStoredProcedure(table, quoteType));
         }
 
         public void AddCreateTableBatches(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)

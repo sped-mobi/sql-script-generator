@@ -4,24 +4,99 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using Microsoft.SqlServer.TransactSql.ScriptDom;
 using System;
 using System.Collections.Generic;
 using System.Xml.Serialization;
 
 namespace Microsoft.SqlServer.TransactSql.Configuration
 {
+
+
     [Serializable]
     [XmlRoot]
-    public partial class Options
+    public partial class GenerationOptions
     {
-        [XmlElement]
-        public string ProcedurePrefix { get; set; }
+        [XmlElement(Type = typeof(bool))]
+        public bool AlignClauseBodies { get; set; }
 
-        [XmlElement]
-        public string TablePrefix { get; set; }
+        [XmlElement(Type = typeof(bool))]
+        public bool AlignColumnDefinitionFields { get; set; }
 
-        [XmlElement]
-        public string ViewPrefix { get; set; }
+        [XmlElement(Type = typeof(bool))]
+        public bool AlignSetClauseItem { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool AsKeywordOnOwnLine { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool IncludeSemicolons { get; set; }
+
+        [XmlElement(Type = typeof(int))]
+        public int IndentationSize { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool IndentSetClause { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool IndentViewBody { get; set; }
+
+        [XmlElement(Type = typeof(KeywordCasing))]
+        public KeywordCasing KeywordCasing { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool MultilineInsertSourcesList { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool MultilineInsertTargetsList { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool MultilineSelectElementsList { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool MultilineSetClauseItems { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool MultilineViewColumnsList { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool MultilineWherePredicatesList { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeCloseParenthesisInMultilineList { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeFromClause { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeGroupByClause { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeHavingClause { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeJoinClause { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeOffsetClause { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeOpenParenthesisInMultilineList { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeOrderByClause { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeOutputClause { get; set; }
+
+        [XmlElement(Type = typeof(bool))]
+        public bool NewLineBeforeWhereClause { get; set; }
+
+        [XmlElement(Type = typeof(SqlEngineType))]
+        public SqlEngineType SqlEngineType { get; set; }
+
+        [XmlElement(Type=typeof(SqlVersion))]
+        public SqlVersion SqlVersion { get; set; }
     }
 
     [Serializable]
@@ -29,7 +104,7 @@ namespace Microsoft.SqlServer.TransactSql.Configuration
     public partial class Database
     {
         [XmlElement]
-        public Options Options { get; set; }
+        public GenerationOptions Options { get; set; }
 
         [XmlAttribute]
         public string DatabaseName { get; set; }

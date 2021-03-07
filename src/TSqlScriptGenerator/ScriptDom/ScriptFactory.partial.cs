@@ -131,9 +131,49 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             return fragment;
         }
 
+        public static SchemaObjectName TableName(string name)
+        {
+            var objectName = new SchemaObjectName();
+            objectName.Identifiers.Add(Identifier(name));
+            return objectName;
+        }
+
+        public static NamedTableReference NamedTableReference(string tableName)
+        {
+            var fragment = new NamedTableReference();
+            fragment.Alias = null;
+            fragment.SchemaObject = TableName(tableName);
+            return fragment;
+        }
+
         public static NamedTableReference NamedTableReference(SchemaObjectName namedTable)
         {
             var fragment = new NamedTableReference();
+            fragment.Alias = null;
+            fragment.SchemaObject = namedTable;
+            return fragment;
+        }
+
+        public static NamedTableReference NamedTableReference(Identifier alias, SchemaObjectName namedTable)
+        {
+            var fragment = new NamedTableReference();
+            fragment.Alias = alias;
+            fragment.SchemaObject = namedTable;
+            return fragment;
+        }
+
+        public static NamedTableReference NamedTableReference(QuoteType quoteType, string identifier, SchemaObjectName namedTable)
+        {
+            var fragment = new NamedTableReference();
+            fragment.Alias = Identifier(identifier, quoteType);
+            fragment.SchemaObject = namedTable;
+            return fragment;
+        }
+
+        public static NamedTableReference NamedTableReference(string identifier, SchemaObjectName namedTable, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            var fragment = new NamedTableReference();
+            fragment.Alias = Identifier(identifier, quoteType);
             fragment.SchemaObject = namedTable;
             return fragment;
         }
@@ -145,8 +185,10 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
 
         public static NullableConstraintDefinition NullableConstraint()
         {
-            var fragment = new NullableConstraintDefinition();
-            fragment.Nullable = true;
+            var fragment = new NullableConstraintDefinition
+            {
+                Nullable = true
+            };
             return fragment;
         }
 
@@ -191,14 +233,22 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
                 retVal.Identifiers.AddRange(List(quoteType,identifiers));
             return retVal;
         }
-    }
 
-
-    public class IdentifierList : List<Identifier>
-    {
-        public IdentifierList(IEnumerable<Identifier> identifiers)
+        private class IdentifierList : List<Identifier>
         {
-            AddRange(identifiers);
+            internal IdentifierList(IEnumerable<Identifier> identifiers)
+            {
+                if (identifiers != null)
+                {
+                    foreach (var identifier in identifiers)
+                    {
+                        this.Add(identifier);
+                    }
+                }
+            }
         }
     }
+
+
+
 }

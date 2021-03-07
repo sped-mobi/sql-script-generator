@@ -1,0 +1,246 @@
+﻿<Database Version="2" DatabaseName="SPED_DB">
+  <GenerationOptions>
+    <AlignClauseBodies>true</AlignClauseBodies>
+    <AlignColumnDefinitionFields>true</AlignColumnDefinitionFields>
+    <AlignSetClauseItem>true</AlignSetClauseItem>
+    <AsKeywordOnOwnLine>true</AsKeywordOnOwnLine>
+    <IncludeSemicolons>true</IncludeSemicolons>
+    <IndentationSize>1</IndentationSize>
+    <IndentSetClause>true</IndentSetClause>
+    <IndentViewBody>true</IndentViewBody>
+    <!--<KeywordCasing>Lowercase</KeywordCasing>-->
+    <MultilineInsertSourcesList>true</MultilineInsertSourcesList>
+    <MultilineInsertTargetsList>true</MultilineInsertTargetsList>
+    <MultilineSelectElementsList>true</MultilineSelectElementsList>
+    <MultilineSetClauseItems>true</MultilineSetClauseItems>
+    <MultilineViewColumnsList>true</MultilineViewColumnsList>
+    <MultilineWherePredicatesList>true</MultilineWherePredicatesList>
+    <NewLineBeforeCloseParenthesisInMultilineList>true</NewLineBeforeCloseParenthesisInMultilineList>
+    <NewLineBeforeFromClause>true</NewLineBeforeFromClause>
+    <NewLineBeforeGroupByClause>true</NewLineBeforeGroupByClause>
+    <NewLineBeforeHavingClause>true</NewLineBeforeHavingClause>
+    <NewLineBeforeJoinClause>true</NewLineBeforeJoinClause>
+    <NewLineBeforeOffsetClause>true</NewLineBeforeOffsetClause>
+    <NewLineBeforeOpenParenthesisInMultilineList>true</NewLineBeforeOpenParenthesisInMultilineList>
+    <NewLineBeforeOrderByClause>true</NewLineBeforeOrderByClause>
+    <NewLineBeforeOutputClause>true</NewLineBeforeOutputClause>
+    <NewLineBeforeWhereClause>true</NewLineBeforeWhereClause>
+    <!--<SqlEngineType>All</SqlEngineType>
+    <SqlVersion>Sql150</SqlVersion>-->
+  </GenerationOptions>
+  <Schemas>
+    <Schema Name="dbo" DbDefault="1" />
+    <Schema Name="guest" DbDefault="1" />
+    <Schema Name="db_owner" DbDefault="1" />
+    <Schema Name="db_accessadmin" DbDefault="1" />
+    <Schema Name="db_securityadmin" DbDefault="1" />
+    <Schema Name="db_ddladmin" DbDefault="1" />
+    <Schema Name="db_backupoperator" DbDefault="1" />
+    <Schema Name="db_datareader" DbDefault="1" />
+    <Schema Name="db_datawriter" DbDefault="1" />
+    <Schema Name="db_denydatareader" DbDefault="1" />
+    <Schema Name="db_denydatawriter" DbDefault="1" />
+  </Schemas>
+  <Tables>
+    <Table Schema="dbo" Name="InstructionalGuide">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
+        <Column Name="Name" Position="2" DataType="varchar(100)" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_InstructionalGuide_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
+          <Members>
+            <Member Column="ID" Position="1" IsIncluded="0" />
+          </Members>
+        </Index>
+      </Indexes>
+    </Table>
+    <Table Schema="dbo" Name="InstructionalTopic">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
+        <Column Name="InstructionalGuideID" Position="2" DataType="int"  />
+        <Column Name="Name" Position="3" DataType="varchar(100)" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_InstructionalTopic_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
+          <Members>
+            <Member Column="ID" Position="1" IsIncluded="0" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_InstructionalTopic_InstructionalGuideID" PkTableSchema="dbo" PkTable="InstructionalGuide">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="InstructionalGuideID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+    <Table Schema="dbo" Name="InstructionalStrategy">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
+        <Column Name="InstructionalTopicID" Position="2" DataType="int" />
+        <Column Name="Name" Position="3" DataType="varchar(100)" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_InstructionalStrategy_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
+          <Members>
+            <Member Column="ID" Position="1" IsIncluded="0" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_InstructionalStrategy_InstructionalTopicID" PkTableSchema="dbo" PkTable="InstructionalTopic">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="InstructionalTopicID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+    <Table Schema="dbo" Name="Introduction">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
+        <Column Name="InstructionalStrategyID" Position="2" DataType="int" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Introduction_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
+          <Members>
+            <Member Column="ID" Position="1" IsIncluded="0" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_Introduction_InstructionalStrategy" PkTableSchema="dbo" PkTable="InstructionalStrategy">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="InstructionalStrategyID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+    <Table Schema="dbo" Name="TeachingModel">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
+        <Column Name="InstructionalStrategyID" Position="2" DataType="int" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_TeachingModel_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
+          <Members>
+            <Member Column="ID" Position="1" IsIncluded="0" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_TeachingModel_InstructionalStrategy" PkTableSchema="dbo" PkTable="InstructionalStrategy">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="InstructionalStrategyID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+    <Table Schema="dbo" Name="Implementation">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
+        <Column Name="InstructionalStrategyID" Position="2" DataType="int" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Implementation_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
+          <Members>
+            <Member Column="ID" Position="1" IsIncluded="0" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_Implementation_InstructionalStrategy" PkTableSchema="dbo" PkTable="InstructionalStrategy">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="InstructionalStrategyID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+    <Table Schema="dbo" Name="Objectives">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
+        <Column Name="InstructionalStrategyID" Position="2" DataType="int" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Objectives_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
+          <Members>
+            <Member Column="ID" Position="1" IsIncluded="0" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_Objectives_InstructionalStrategy" PkTableSchema="dbo" PkTable="InstructionalStrategy">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="InstructionalStrategyID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+    <Table Schema="dbo" Name="Materials">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
+        <Column Name="InstructionalStrategyID" Position="2" DataType="int" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Materials_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
+          <Members>
+            <Member Column="ID" Position="1" IsIncluded="0" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_Materials_InstructionalStrategy" PkTableSchema="dbo" PkTable="InstructionalStrategy">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="InstructionalStrategyID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+    <Table Schema="dbo" Name="Bullet">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" Position="1" DataType="int" />
+        <Column Name="IntroductionID" Position="2" DataType="int" AllowNulls="1" />
+        <Column Name="TeachingModelID" Position="2" DataType="int" AllowNulls="1" />
+        <Column Name="ImplementationID" Position="2" DataType="int" AllowNulls="1" />
+        <Column Name="ObjectivesID" Position="2" DataType="int" AllowNulls="1" />
+        <Column Name="MaterialsID" Position="2" DataType="int" AllowNulls="1" />
+        <Column Name="Body" Position="3" DataType="varchar(MAX)" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Bullet_ID" IsClustered="1" IsUnique="1" IsPrimary="1">
+          <Members>
+            <Member Column="ID" Position="1" IsIncluded="0" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_Bullet_IntroductionID" PkTableSchema="dbo" PkTable="Introduction">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="IntroductionID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+        <ForeignKey Name="FK_Bullet_TeachingModelID" PkTableSchema="dbo" PkTable="TeachingModel">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="TeachingModelID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+        <ForeignKey Name="FK_Bullet_ImplementationID" PkTableSchema="dbo" PkTable="Implementation">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="ImplementationID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+        <ForeignKey Name="FK_Bullet_ObjectivesID" PkTableSchema="dbo" PkTable="Objectives">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="ObjectivesID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+        <ForeignKey Name="FK_Bullet_MaterialsID" PkTableSchema="dbo" PkTable="Materials">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="MaterialsID" Position="1" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+  </Tables>
+</Database>

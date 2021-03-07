@@ -21,6 +21,16 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
         {
             _writer = new IndentedTextWriter(writer);
             _generator = generator;
+            _generator.Options.AlignClauseBodies = true;
+            _generator.Options.AsKeywordOnOwnLine = true;
+            _generator.Options.KeywordCasing = KeywordCasing.Uppercase;
+            _generator.Options.IncludeSemicolons = true;
+            _generator.Options.IndentationSize = 4;
+            _generator.Options.SqlVersion = SqlVersion.Sql150;
+            _generator.Options.NewLineBeforeOpenParenthesisInMultilineList = true;
+            _generator.Options.MultilineSelectElementsList = true;
+            _generator.Options.MultilineInsertSourcesList = true;
+            _generator.Options.MultilineInsertTargetsList = true;
         }
 
         public TSqlScriptWriter(TextWriter writer)
@@ -29,11 +39,16 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             _generator = new Sql150ScriptGenerator();
             _generator.Options.AlignClauseBodies = true;
             _generator.Options.AsKeywordOnOwnLine = true;
-            _generator.Options.KeywordCasing = KeywordCasing.Lowercase;
+            _generator.Options.KeywordCasing = KeywordCasing.Uppercase;
             _generator.Options.IncludeSemicolons = true;
             _generator.Options.IndentationSize = 4;
             _generator.Options.SqlVersion = SqlVersion.Sql150;
             _generator.Options.NewLineBeforeOpenParenthesisInMultilineList = true;
+            _generator.Options.MultilineSelectElementsList = true;
+            _generator.Options.MultilineInsertSourcesList = true;
+            _generator.Options.MultilineInsertTargetsList = true;
+
+
         }
 
         public void WriteScript(TSqlScript script, KeywordCasing casing = KeywordCasing.Lowercase)

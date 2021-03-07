@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Microsoft.SqlServer.TransactSql.ScriptDom
 {
@@ -1111,6 +1112,7 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
                 retVal.ComputeClauses.AddRange(computeClauses);
             if (optimizerHints != null)
                 retVal.OptimizerHints.AddRange(optimizerHints);
+            
             return retVal;
         }
         
@@ -1288,7 +1290,7 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             return retVal;
         }
         
-        public static StringLiteral StringLiteral(string value, bool isNational, bool isLargeObject)
+        public static StringLiteral StringLiteral(string value, bool isNational = false, bool isLargeObject = false)
         {
             var retVal = new StringLiteral();
             if (value != null)
@@ -1404,6 +1406,24 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             retVal.QuoteType = quoteType;
             return retVal;
         }
+
+        public static VariableReference VariableReference(string name)
+        {
+            if (name is null)
+                throw new ArgumentNullException(nameof(name));
+
+            if (name[0] == '@')
+            {
+                return new VariableReference { Name = name };
+            }
+            else
+            {
+                return new VariableReference
+                {
+                    Name = "@" + name
+                };
+            }
+        }
         
         public static PrintStatement Print(ScalarExpression expression = null)
         {
@@ -1438,6 +1458,8 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
                 retVal.Expression = expression;
             return retVal;
         }
+
+        
         
         public static IdentityOptions IdentityOptions(bool isIdentityNotForReplication, ScalarExpression identityIncrement = null, ScalarExpression identitySeed = null)
         {
@@ -1544,6 +1566,32 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
                 retVal.Statements.AddRange(statements);
             return retVal;
         }
+
+        public static List<SelectElement> ElementList(IEnumerable<SelectElement> elements)
+        {
+            return new List<SelectElement>(elements);
+        }
+
+        public static List<SelectElement> ElementList(SelectElement[] elements)
+        {
+            return new List<SelectElement>(elements);
+        }
+    
+
+         public static List<SelectElement> ElementList(IEnumerable<string> elements)
+        {
+            return ElementList(elements.ToArray());
+        }
+        public static List<SelectElement> ElementList(params string[] elements)
+        {
+            var list = new List<SelectElement>();
+            foreach(var element in elements)
+            {
+                list.Add(SelectScalarExpression(element));
+            }
+            return list;
+        }
+
         
         public static StatementList List(params TSqlStatement[] statements)
         {
@@ -1551,6 +1599,24 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             if (statements != null)
                 retVal.Statements.AddRange(statements);
             return retVal;
+        }
+
+        public static ColumnReferenceExpression ColumnReference(string columnName, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            return new ColumnReferenceExpression
+            {
+                ColumnType = ColumnType.Regular,
+                MultiPartIdentifier = MultiPartIdentifier(Identifier(columnName, quoteType))
+            };
+        }
+
+        public static SelectScalarExpression SelectScalarExpression(string columnName, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            return new SelectScalarExpression
+            {
+                Expression = ColumnReference(columnName, quoteType)
+                
+            };
         }
         
         public static MethodSpecifier MethodSpecifier(Identifier assemblyName, Identifier className, Identifier methodName)
@@ -1562,6 +1628,13 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
                 retVal.ClassName = className;
             if (methodName != null)
                 retVal.MethodName = methodName;
+            return retVal;
+        }
+
+        public static IdentifierOrValueExpression IdentifierOrValue(Identifier identifier)
+        {
+            var retVal = new IdentifierOrValueExpression();
+            retVal.Identifier = identifier;
             return retVal;
         }
         
@@ -1596,7 +1669,70 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             retVal.Options = options;
             return retVal;
         }
+
+
+        public static FromClause From(TableReference tableReference)
+        {
+            var retVal = new FromClause();
+            retVal.TableReferences.Add(tableReference);
+            return retVal;
+        }
+
+        public static WhereClause Where(BooleanExpression expression)
+        {
+            var retVal = new WhereClause();
+            retVal.SearchCondition = expression;
+            return retVal;
+        }
+
+        public static BooleanComparisonExpression BooleanEqualsComparison(ScalarExpression firstExpression, ScalarExpression secondExpression)
+        {
+            return BooleanComparison(BooleanComparisonType.Equals, firstExpression, secondExpression);
+        }
+
+        public static BooleanComparisonExpression BooleanComparison(BooleanComparisonType type, ScalarExpression firstExpression, ScalarExpression secondExpression)
+        {
+            var retVal = new BooleanComparisonExpression();
+            retVal.ComparisonType = type;
+            retVal.FirstExpression = firstExpression;
+            retVal.SecondExpression = secondExpression;
+            return retVal;
+        }
+
+        public static SelectStarExpression SelectStarExpression()
+        {
+            var retVal = new SelectStarExpression();
+            return retVal;
+        }
+
         
+
+        public static QuerySpecification Query(FromClause fromClause, params SelectElement[] statements)
+        {
+            var retVal = new QuerySpecification();
+            retVal.FromClause = fromClause;
+            retVal.SelectElements.AddRange(statements);
+            return retVal;
+        }
+
+        public static QuerySpecification Query(FromClause fromClause, List<SelectElement> statements)
+        {
+            var retVal = new QuerySpecification();
+            retVal.FromClause = fromClause;
+            retVal.SelectElements.AddRange(statements);
+            return retVal;
+        }
+
+        public static QuerySpecification Query(FromClause fromClause, WhereClause whereClause, TopRowFilter topRowFilter,  IEnumerable<SelectElement> elements)
+        {
+            var retVal = new QuerySpecification();
+            retVal.FromClause = fromClause;
+            retVal.WhereClause = whereClause;
+            retVal.SelectElements.AddRange(elements);
+            retVal.TopRowFilter = topRowFilter;
+            return retVal;
+        }
+
         public static ReturnStatement Return(ScalarExpression expression = null)
         {
             var retVal = new ReturnStatement();

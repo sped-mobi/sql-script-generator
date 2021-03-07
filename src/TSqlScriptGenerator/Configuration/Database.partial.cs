@@ -148,7 +148,7 @@ namespace Microsoft.SqlServer.TransactSql.Configuration
         {
             Schemas = new List<Schema>();
             Tables = new List<Table>();
-            Options = new Options();
+            Options = new GenerationOptions();
         }
 
         public void Initialize()
