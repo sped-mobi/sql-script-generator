@@ -16,7 +16,7 @@ using System.Diagnostics;
 
 namespace Microsoft.SqlServer.TransactSql
 {
-    public class Program
+    public static class Program
     {
         [STAThread]
         public static void Main(params string[] args)
@@ -58,7 +58,7 @@ namespace Microsoft.SqlServer.TransactSql
 
                             StringBuilder sb = new StringBuilder();
                             using (var sw = new StringWriter(sb))
-                            using (TSqlScriptWriter writer = new TSqlScriptWriter(sw, Generator))
+                            using (TSqlScriptWriter writer = new TSqlScriptWriter(sw, GetGenerator(database.GenerationOptions)))
                             {
                                 writer.WriteScript(script, KeywordCasing.Uppercase);
                             }
@@ -86,6 +86,43 @@ namespace Microsoft.SqlServer.TransactSql
 
             Process.Start("notepad.exe", "Database.sql");
 
+        }
+
+        private static SqlScriptGenerator GetGenerator(GenerationOptions options)
+        {
+            SqlScriptGenerator generator = null;
+            switch (options.SqlVersion)
+            {
+
+                case SqlVersion.Sql80:
+                    generator = new Sql80ScriptGenerator();
+                    break;
+                case SqlVersion.Sql100:
+                    generator = new Sql100ScriptGenerator();
+                    break;
+                case SqlVersion.Sql110:
+                    generator = new Sql110ScriptGenerator();
+                    break;
+                case SqlVersion.Sql120:
+                    generator = new Sql120ScriptGenerator();
+                    break;
+                case SqlVersion.Sql130:
+                    generator = new Sql130ScriptGenerator();
+                    break;
+                case SqlVersion.Sql140:
+                    generator = new Sql140ScriptGenerator();
+                    break;
+                case SqlVersion.Sql150:
+                    generator = new Sql150ScriptGenerator();
+                    break;
+                default:
+                    generator = new Sql90ScriptGenerator();
+                    break;
+            }
+
+            generator.Options.Apply(options);
+
+            return generator;
         }
 
         private static Sql150ScriptGenerator Generator

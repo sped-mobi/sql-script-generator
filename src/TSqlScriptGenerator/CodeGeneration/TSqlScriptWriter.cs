@@ -15,22 +15,23 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
     {
         private readonly IndentedTextWriter _writer;
 
-        private readonly Sql150ScriptGenerator _generator;
+        private readonly SqlScriptGenerator _generator;
 
-        public TSqlScriptWriter(TextWriter writer, Sql150ScriptGenerator generator)
+        public TSqlScriptWriter(TextWriter writer, SqlScriptGenerator generator)
         {
             _writer = new IndentedTextWriter(writer);
             _generator = generator;
-            _generator.Options.AlignClauseBodies = true;
-            _generator.Options.AsKeywordOnOwnLine = true;
-            _generator.Options.KeywordCasing = KeywordCasing.Uppercase;
-            _generator.Options.IncludeSemicolons = true;
-            _generator.Options.IndentationSize = 4;
-            _generator.Options.SqlVersion = SqlVersion.Sql150;
-            _generator.Options.NewLineBeforeOpenParenthesisInMultilineList = true;
-            _generator.Options.MultilineSelectElementsList = true;
-            _generator.Options.MultilineInsertSourcesList = true;
-            _generator.Options.MultilineInsertTargetsList = true;
+
+            //_generator.Options.AlignClauseBodies = true;
+            //_generator.Options.AsKeywordOnOwnLine = true;
+            //_generator.Options.KeywordCasing = KeywordCasing.Uppercase;
+            //_generator.Options.IncludeSemicolons = true;
+            //_generator.Options.IndentationSize = 4;
+            //_generator.Options.SqlVersion = SqlVersion.Sql150;
+            //_generator.Options.NewLineBeforeOpenParenthesisInMultilineList = true;
+            //_generator.Options.MultilineSelectElementsList = true;
+            //_generator.Options.MultilineInsertSourcesList = true;
+            //_generator.Options.MultilineInsertTargetsList = true;
         }
 
         public TSqlScriptWriter(TextWriter writer)

@@ -27,20 +27,11 @@
   <xs:element name="AlignColumnDefinitionFields" type="xs:boolean" />
   <xs:element name="IncludeSemicolons" type="xs:boolean" />
   <xs:element name="IndentationSize" type="xs:int" />
-  <xs:element name="SqlEngineType" type="SqlEngineType" />
   <xs:element name="SqlVersion" type="SqlVersion" />
   <xs:element name="KeywordCasing" type="KeywordCasing" />
   <xs:element name="NewLineBeforeOpenParenthesisInMultilineList" type="xs:boolean" />
 
 
-
-  <xs:simpleType name="SqlEngineType">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="All"/>
-      <xs:enumeration value="SqlAzure"/>
-      <xs:enumeration value="Standalone"/>
-    </xs:restriction>
-  </xs:simpleType>
 
   <xs:simpleType name="SqlVersion">
     <xs:restriction base="xs:string">
@@ -93,7 +84,6 @@
       <xs:element ref="NewLineBeforeOrderByClause" minOccurs="0" />
       <xs:element ref="NewLineBeforeOutputClause" minOccurs="0" />
       <xs:element ref="NewLineBeforeWhereClause" minOccurs="0" />
-      <xs:element ref="SqlEngineType" minOccurs="0" />
       <xs:element ref="SqlVersion" minOccurs="0" />
     </xs:sequence>
   </xs:complexType>

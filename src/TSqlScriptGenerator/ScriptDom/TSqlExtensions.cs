@@ -11,6 +11,37 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
 {
     internal static class TSqlExtensions
     {
+
+        public static void Apply(this SqlScriptGeneratorOptions source, Configuration.GenerationOptions options)
+        {
+            source.AlignClauseBodies = options.AlignClauseBodies;
+            source.AlignColumnDefinitionFields = options.AlignColumnDefinitionFields;
+            source.AlignSetClauseItem = options.AlignSetClauseItem;
+            source.AsKeywordOnOwnLine = options.AsKeywordOnOwnLine;
+            source.IncludeSemicolons = options.IncludeSemicolons;
+            source.IndentationSize = options.IndentationSize;
+            source.IndentSetClause = options.IndentSetClause;
+            source.IndentViewBody = options.IndentViewBody;
+            source.KeywordCasing = options.KeywordCasing;
+            source.MultilineInsertSourcesList = options.MultilineInsertSourcesList;
+            source.MultilineInsertTargetsList = options.MultilineInsertTargetsList;
+            source.MultilineSelectElementsList = options.MultilineSelectElementsList;
+            source.MultilineSetClauseItems = options.MultilineSetClauseItems;
+            source.MultilineViewColumnsList = options.MultilineViewColumnsList;
+            source.MultilineWherePredicatesList = options.MultilineWherePredicatesList;
+            source.NewLineBeforeCloseParenthesisInMultilineList = options.NewLineBeforeCloseParenthesisInMultilineList;
+            source.NewLineBeforeFromClause = options.NewLineBeforeFromClause;
+            source.NewLineBeforeGroupByClause = options.NewLineBeforeGroupByClause;
+            source.NewLineBeforeHavingClause = options.NewLineBeforeHavingClause;
+            source.NewLineBeforeJoinClause = options.NewLineBeforeJoinClause;
+            source.NewLineBeforeOffsetClause = options.NewLineBeforeOffsetClause;
+            source.NewLineBeforeOpenParenthesisInMultilineList = options.NewLineBeforeOpenParenthesisInMultilineList;
+            source.NewLineBeforeOrderByClause = options.NewLineBeforeOrderByClause;
+            source.NewLineBeforeOutputClause = options.NewLineBeforeOutputClause;
+            source.NewLineBeforeWhereClause = options.NewLineBeforeWhereClause;
+            source.SqlVersion = options.SqlVersion;
+
+        }
         public static SqlDataTypeOption ToSqlDataTypeOption(this string source)
         {
             if (string.IsNullOrEmpty(source)) throw new ArgumentNullException(nameof(source));

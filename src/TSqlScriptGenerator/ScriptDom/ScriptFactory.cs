@@ -1145,6 +1145,8 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
                 retVal.OptimizerHints.AddRange(optimizerHints);
             return retVal;
         }
+
+
         
         public static InsertSpecification InsertSpecification(InsertSource insertSource = null, TableReference target = null, TopRowFilter topRowFilter = null, OutputIntoClause outputIntoClause = null, OutputClause outputClause = null, InsertOption insertOption = InsertOption.None, IEnumerable<ColumnReferenceExpression> columns = null)
         {

@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Xml.Serialization;
 using Microsoft.SqlServer.TransactSql.Configuration;
 using Microsoft.SqlServer.TransactSql.ScriptDom;
 
@@ -28,6 +27,7 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             builder.AddForeignKeyConstraintBatches(database.Tables, quoteType);
             builder.AddInsertProcedures(database.Tables, quoteType);
             builder.AddReadProcedures(database.Tables, quoteType);
+            builder.AddUpdateProcedures(database.Tables, quoteType);
             builder.AddAddFindProcedures(database.Tables, quoteType);
 
             return builder;
@@ -56,7 +56,7 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
         public SchemaObjectName GenerateStoredProcedureName(string procedureName, Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
             SchemaObjectName objectName = new SchemaObjectName();
-            objectName.Identifiers.AddRange(ScriptFactory.Identifier(table.Schema, quoteType),ScriptFactory.Identifier(procedureName, quoteType));
+            objectName.Identifiers.AddRange(ScriptFactory.Identifier(table.Schema, quoteType), ScriptFactory.Identifier(procedureName, quoteType));
             return objectName;
         }
 
@@ -137,29 +137,6 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             return ScriptFactory.Use(identifier);
         }
 
-        private bool IsPrimaryKey(Column column)
-        {
-            Table table = column.Parent;
-            Database database = table.Parent;
-
-            foreach (var constraint in table.Indexes)
-            {
-                if (constraint.IsPrimary)
-                {
-                    foreach (var member in constraint.Members)
-                    {
-                        if (member.Column == column.Name)
-                        {
-                            return true;
-                        }
-                    }
-                }
-
-            }
-
-            return false;
-        }
-
         public CreateProcedureStatement GenerateInsertStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
             Database database = table.Parent;
@@ -175,7 +152,7 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
 
             foreach (var column in table.Columns)
             {
-                if (IsPrimaryKey(column))
+                if (column.IsPrimaryKey())
                     continue;
 
                 scalarExpressions.Add(
@@ -188,7 +165,7 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
                             ScriptFactory.Identifier(column.Name, quoteType))));
 
                 parameters.Add(
-                    ScriptFactory.ProcedureParameter(CreateProcedureParameterVariableName(column),false,
+                    ScriptFactory.ProcedureParameter(CreateProcedureParameterVariableName(column), false,
                     GenerateDataTypeReference(SqlDataType.Parse(column.DataType))));
             }
             rowValue.ColumnValues.AddRange(scalarExpressions);
@@ -202,13 +179,11 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
                                                 GenerateSchemaObjectName(table, quoteType)),
                                                 null, null, null, InsertOption.Into, columns)),
                                     ScriptFactory.Return(ScriptFactory.IntegerLiteral("1")));
-            var statement = ScriptFactory.CreateProcedure(false,
+            return ScriptFactory.CreateProcedure(false,
                 ScriptFactory.ProcedureReference(
                     GenerateStoredProcedureName(storedProcedureName, table, quoteType)),
                         ScriptFactory.List(
-                            ScriptFactory.BeginEndBlock(statements)),null,null, parameters);
-
-            return statement;
+                            ScriptFactory.BeginEndBlock(statements)), null, null, parameters);
         }
 
         public CreateProcedureStatement GenerateFindStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
@@ -237,18 +212,83 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
                                             )
                                         )
                                        );
-            var statement = ScriptFactory.CreateProcedure(false,
+            return ScriptFactory.CreateProcedure(false,
                 ScriptFactory.ProcedureReference(
                     GenerateStoredProcedureName(storedProcedureName, table, quoteType)),
                         ScriptFactory.List(
                             ScriptFactory.BeginEndBlock(statements)), null, null, parameters);
-
-            return statement;
         }
 
         private string GetPrimaryKeyColumnName(Table table)
         {
-            return table.Columns.Single(x => IsPrimaryKey(x)).Name;
+            return table.Columns.Single(x => x.IsPrimaryKey()).Name;
+        }
+
+        public CreateProcedureStatement GenerateUpdateStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            var pkColumn = table.Indexes.SingleOrDefault(x => x.IsPrimary).Name;
+            var columnNames = GetColumnNamesWithoutPrimaryKey(table, pkColumn);
+            string storedProcedureName = string.Concat("Update", table.Name);
+            var parameters = CreateProcedureParameters(table, true);
+            var setClauses = new List<SetClause>();
+            string primaryKeyName = "";
+            foreach (var column in table.Columns)
+            {
+                if (column.IsPrimaryKey())
+                {
+                    primaryKeyName = column.Name;
+                    continue;
+                }
+
+                setClauses.Add(ScriptFactory.EqualsAssignmentSetClause(
+                    ScriptFactory.ColumnReference(column.Name, quoteType),
+                    ScriptFactory.IdentifierLiteral(
+                        CreateProcedureParameterVariableName(column), QuoteType.NotQuoted)));
+            }
+
+            StatementList statements = ScriptFactory.List(
+                ScriptFactory.Update(ScriptFactory.UpdateSpecification(null,
+                ScriptFactory.Where(
+                    ScriptFactory.BooleanEqualsComparison(ScriptFactory.IdentifierLiteral(primaryKeyName, quoteType), ScriptFactory.VariableReference(primaryKeyName))),
+                CreateNamedTableReference(table, quoteType), null, null, null, setClauses)));
+
+            return ScriptFactory.CreateProcedure(false,
+                ScriptFactory.ProcedureReference(
+                    GenerateStoredProcedureName(storedProcedureName, table, quoteType)),
+                        ScriptFactory.List(
+                            ScriptFactory.BeginEndBlock(statements)), null, null, parameters);
+        }
+
+        private NamedTableReference CreateNamedTableReference(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            return ScriptFactory.NamedTableReference(table.Parent.DatabaseName, table.Schema, table.Name, quoteType);
+        }
+
+        private List<ProcedureParameter> CreateProcedureParameters(Table table, bool includePrimaryKey = false)
+        {
+            List<ProcedureParameter> parameters = new List<ProcedureParameter>();
+            foreach (var column in table.Columns)
+            {
+                if (!column.IsPrimaryKey())
+                {
+                    parameters.Add(CreateProcedureParameter(column));
+                }
+                else
+                {
+                    if (includePrimaryKey)
+                    {
+                        parameters.Add(CreateProcedureParameter(column));
+                    }
+                }
+                
+            }
+            return parameters;
+        }
+
+        private static ProcedureParameter CreateProcedureParameter(Column column)
+        {
+            return ScriptFactory.ProcedureParameter(CreateProcedureParameterVariableName(column), false,
+                                    GenerateDataTypeReference(SqlDataType.Parse(column.DataType)));
         }
 
         public CreateProcedureStatement GenerateReadStoredProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
@@ -263,13 +303,11 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
                                             ScriptFactory.Query(
                                                 ScriptFactory.From(ScriptFactory.NamedTableReference(GenerateSchemaObjectName(table, quoteType))),
                                                  ScriptFactory.ElementList(columnNames.Select(x => ScriptFactory.SelectScalarExpression(x, quoteType))))));
-            var statement = ScriptFactory.CreateProcedure(false,
+            return ScriptFactory.CreateProcedure(false,
                 ScriptFactory.ProcedureReference(
                     GenerateStoredProcedureName(storedProcedureName, table, quoteType)),
                         ScriptFactory.List(
                             ScriptFactory.BeginEndBlock(statements)), null, null, null);
-
-            return statement;
         }
 
         private static IEnumerable<string> GetColumnNamesWithoutPrimaryKey(Table table, string pkColumn)

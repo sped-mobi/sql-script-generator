@@ -11,6 +11,7 @@ using System.Xml.Serialization;
 
 namespace DatabaseUtilities.Temp
 {
+
     public partial class Schema
     {
         [XmlIgnore]

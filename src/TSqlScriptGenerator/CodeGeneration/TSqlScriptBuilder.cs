@@ -50,6 +50,15 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             }
         }
 
+        public void AddUpdateProcedures(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            AddBatch(Generator.GeneratePrintStatement($"========== Creating Update Procedures =========="));
+            foreach (Table table in tables)
+            {
+                AddUpdateProcedure(table, quoteType);
+            }
+        }
+
         public void AddFindProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
         {
             Database database = table.Parent;
@@ -74,6 +83,14 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             string storedProcedureName = string.Concat("Read", table.Name);
             AddBatch(Generator.GeneratePrintStatement($"Creating procedure {storedProcedureName}..."));
             AddBatch(Generator.GenerateReadStoredProcedure(table, quoteType));
+        }
+
+        public void AddUpdateProcedure(Table table, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            Database database = table.Parent;
+            string storedProcedureName = string.Concat("Update", table.Name);
+            AddBatch(Generator.GeneratePrintStatement($"Creating procedure {storedProcedureName}..."));
+            AddBatch(Generator.GenerateUpdateStoredProcedure(table, quoteType));
         }
 
         public void AddCreateTableBatches(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)

@@ -17,6 +17,35 @@ namespace Microsoft.SqlServer.TransactSql.Configuration
     [XmlRoot]
     public partial class GenerationOptions
     {
+        public GenerationOptions()
+        {
+            AlignClauseBodies = false;
+            AlignColumnDefinitionFields = false;
+            AlignSetClauseItem = false;
+            AsKeywordOnOwnLine = false;
+            IncludeSemicolons = false;
+            IndentationSize = 1;
+            IndentSetClause = false;
+            IndentViewBody = false;
+            KeywordCasing = KeywordCasing.Uppercase;
+            MultilineInsertSourcesList = false;
+            MultilineInsertTargetsList = false;
+            MultilineSelectElementsList = false;
+            MultilineSetClauseItems = false;
+            MultilineViewColumnsList = false;
+            MultilineWherePredicatesList = false;
+            NewLineBeforeCloseParenthesisInMultilineList = false;
+            NewLineBeforeFromClause = false;
+            NewLineBeforeGroupByClause = false;
+            NewLineBeforeHavingClause = false;
+            NewLineBeforeJoinClause = false;
+            NewLineBeforeOffsetClause = false;
+            NewLineBeforeOpenParenthesisInMultilineList = false;
+            NewLineBeforeOrderByClause = false;
+            NewLineBeforeOutputClause = false;
+            NewLineBeforeWhereClause = false;
+        }
+
         [XmlElement(Type = typeof(bool))]
         public bool AlignClauseBodies { get; set; }
 
@@ -92,9 +121,6 @@ namespace Microsoft.SqlServer.TransactSql.Configuration
         [XmlElement(Type = typeof(bool))]
         public bool NewLineBeforeWhereClause { get; set; }
 
-        [XmlElement(Type = typeof(SqlEngineType))]
-        public SqlEngineType SqlEngineType { get; set; }
-
         [XmlElement(Type=typeof(SqlVersion))]
         public SqlVersion SqlVersion { get; set; }
     }
@@ -104,7 +130,7 @@ namespace Microsoft.SqlServer.TransactSql.Configuration
     public partial class Database
     {
         [XmlElement]
-        public GenerationOptions Options { get; set; }
+        public GenerationOptions GenerationOptions { get; set; }
 
         [XmlAttribute]
         public string DatabaseName { get; set; }

@@ -8,39 +8,143 @@ Sample license text.
   elementFormDefault="qualified"
   xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
-    <xs:element name="GenerationOptions" type="GenerationOptions">
+  <xs:element name="GenerationOptions" type="GenerationOptions">
     <xs:annotation>
-      <xs:documentation>
-        Represents options for generating scripts.
-      </xs:documentation>
+      <xs:documentation>Represents options for generating sql scripts.</xs:documentation>
     </xs:annotation>
   </xs:element>
   <xs:complexType name="GenerationOptions">
     <xs:sequence>
-      <xs:element name="AlignClauseBodies" type="xs:boolean" />
-      <xs:element name="AlignColumnDefinitionFields" type="xs:boolean" />
-      <xs:element name="AlignSetClauseItem" type="xs:boolean" />
-      <xs:element name="AsKeywordOnOwnLine" type="xs:boolean" />
-      <xs:element name="IncludeSemicolons" type="xs:boolean" />
-      <xs:element name="IndentationSize" type="xs:unsignedByte" />
-      <xs:element name="IndentSetClause" type="xs:boolean" />
-      <xs:element name="IndentViewBody" type="xs:boolean" />
-      <xs:element name="MultilineInsertSourcesList" type="xs:boolean" />
-      <xs:element name="MultilineInsertTargetsList" type="xs:boolean" />
-      <xs:element name="MultilineSelectElementsList" type="xs:boolean" />
-      <xs:element name="MultilineSetClauseItems" type="xs:boolean" />
-      <xs:element name="MultilineViewColumnsList" type="xs:boolean" />
-      <xs:element name="MultilineWherePredicatesList" type="xs:boolean" />
-      <xs:element name="NewLineBeforeCloseParenthesisInMultilineList" type="xs:boolean" />
-      <xs:element name="NewLineBeforeFromClause" type="xs:boolean" />
-      <xs:element name="NewLineBeforeGroupByClause" type="xs:boolean" />
-      <xs:element name="NewLineBeforeHavingClause" type="xs:boolean" />
-      <xs:element name="NewLineBeforeJoinClause" type="xs:boolean" />
-      <xs:element name="NewLineBeforeOffsetClause" type="xs:boolean" />
-      <xs:element name="NewLineBeforeOpenParenthesisInMultilineList" type="xs:boolean" />
-      <xs:element name="NewLineBeforeOrderByClause" type="xs:boolean" />
-      <xs:element name="NewLineBeforeOutputClause" type="xs:boolean" />
-      <xs:element name="NewLineBeforeWhereClause" type="xs:boolean" />
+      <xs:element name="AlignClauseBodies" type="xs:boolean" default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Gets or sets a boolean indicating if there should be a newline before the OFFSET clause.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AlignColumnDefinitionFields" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Gets or sets a boolean indicating if the INSERT column sources list should be spread across multiple lines.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AlignSetClauseItem" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation>Gets or sets a boolean indicating if the INSERT column targets list should be spread across multiple lines</xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="AsKeywordOnOwnLine" type="xs:boolean" default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IncludeSemicolons" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IndentationSize" type="xs:unsignedByte" default="1" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IndentSetClause" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="IndentViewBody" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="KeywordCasing" type="KeywordCasing" default="Uppercase" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="MultilineInsertSourcesList" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="MultilineInsertTargetsList" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="MultilineSelectElementsList" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="MultilineSetClauseItems" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="MultilineViewColumnsList" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="MultilineWherePredicatesList" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeCloseParenthesisInMultilineList" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeFromClause" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeGroupByClause" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeHavingClause" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeJoinClause" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeOffsetClause" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeOpenParenthesisInMultilineList" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeOrderByClause" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeOutputClause" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="NewLineBeforeWhereClause" type="xs:boolean"  default="false" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
+      <xs:element name="SqlVersion" type="SqlVersion"  default="Sql150" minOccurs="0">
+        <xs:annotation>
+          <xs:documentation></xs:documentation>
+        </xs:annotation>
+      </xs:element>
     </xs:sequence>
   </xs:complexType>
 
@@ -194,6 +298,27 @@ Sample license text.
     <xs:attribute name="Version" type="xs:string" />
     <xs:attribute name="DatabaseName" type="xs:string" />
   </xs:complexType>
+
+  <xs:simpleType name="SqlVersion">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Sql09" />
+      <xs:enumeration value="Sql08" />
+      <xs:enumeration value="Sql10" />
+      <xs:enumeration value="Sql110" />
+      <xs:enumeration value="Sql120" />
+      <xs:enumeration value="Sql130" />
+      <xs:enumeration value="Sql140" />
+      <xs:enumeration value="Sql150" />
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="KeywordCasing">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Uppercase" />
+      <xs:enumeration value="Lowercase" />
+      <xs:enumeration value="PascalCase" />
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:simpleType name="SqlType">
     <xs:restriction base="xs:string">

@@ -24,6 +24,19 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             }
         }
 
+        public static AssignmentSetClause EqualsAssignmentSetClause(ColumnReferenceExpression column, ScalarExpression newValue)
+        {
+            return AssignmentSetClause(AssignmentKind.Equals, column, newValue);
+        }
+
+        public static AssignmentSetClause AssignmentSetClause(AssignmentKind kind, ColumnReferenceExpression column, ScalarExpression newValue)
+        {
+            var fragment = new AssignmentSetClause();
+            fragment.AssignmentKind = kind;
+            fragment.Column = column;
+            fragment.NewValue = newValue;
+            return fragment;
+        }
                 
         public static SqlDataTypeReference SqlDataType(SqlDataTypeOption option, IEnumerable<Literal> parameters)
         {
@@ -144,6 +157,14 @@ namespace Microsoft.SqlServer.TransactSql.ScriptDom
             fragment.Alias = null;
             fragment.SchemaObject = TableName(tableName);
             return fragment;
+        }
+
+        public static NamedTableReference NamedTableReference(string databaseName,
+            string schemaName,
+            string tableName,
+            QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            return NamedTableReference(FullTableName(databaseName, schemaName, tableName, quoteType));
         }
 
         public static NamedTableReference NamedTableReference(SchemaObjectName namedTable)

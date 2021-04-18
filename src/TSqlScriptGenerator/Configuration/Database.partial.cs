@@ -100,6 +100,27 @@ namespace Microsoft.SqlServer.TransactSql.Configuration
         [XmlIgnore]
         public Table Parent { get; private set; }
 
+        public bool IsPrimaryKey()
+        {
+            Table table = Parent;
+            foreach (var constraint in table.Indexes)
+            {
+                if (constraint.IsPrimary)
+                {
+                    foreach (var member in constraint.Members)
+                    {
+                        if (member.Column == Name)
+                        {
+                            return true;
+                        }
+                    }
+                }
+
+            }
+
+            return false;
+        }
+
         public void Initialize(Table parent)
         {
             Parent = parent;
@@ -148,7 +169,7 @@ namespace Microsoft.SqlServer.TransactSql.Configuration
         {
             Schemas = new List<Schema>();
             Tables = new List<Table>();
-            Options = new GenerationOptions();
+            GenerationOptions = new GenerationOptions();
         }
 
         public void Initialize()
