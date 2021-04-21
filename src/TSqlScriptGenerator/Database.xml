@@ -186,5 +186,37 @@
       </ForeignKeys>
     </Table>
 
+    <Table Schema="dbo" Name="AccommodationRef">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
+        <Column Name="EducationPlanID" DataType="INT" AllowNulls="1" />
+        <Column Name="AccommodationID" DataType="INT" AllowNulls="1"/>
+      </Columns>
+      <Indexes>
+        <Index Name="PK_AccommodationRef_ID" IsPrimary="1" IsClustered="1" IsUnique="1">
+          <Members>
+            <Member Column="ID" />
+          </Members>
+        </Index>
+        <Index Name="UQ_AccommodationRef_AccommodationID" IsPrimary="0" IsClustered="0" IsUnique="1">
+          <Members>
+            <Member Column="AccommodationID" />
+          </Members>
+        </Index>
+        <Index Name="UQ_AccommodationRef_EducationPlanID" IsPrimary="0" IsClustered="0" IsUnique="1">
+          <Members>
+            <Member Column="EducationPlanID" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_AccommodationList_EducationPlanID" PkTableSchema="dbo" PkTable="EducationPlan">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="EducationPlanID" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+
   </Tables>
 </Database>

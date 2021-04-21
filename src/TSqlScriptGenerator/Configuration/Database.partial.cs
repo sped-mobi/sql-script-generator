@@ -12,10 +12,6 @@ using System.Xml.Serialization;
 
 namespace Microsoft.SqlServer.TransactSql.Configuration
 {
-    public partial class Options
-    {
-
-    }
     public partial class Schema
     {
         [XmlIgnore]
@@ -165,6 +161,18 @@ namespace Microsoft.SqlServer.TransactSql.Configuration
 
     public partial class Database
     {
+        [XmlAttribute]
+        public string DatabaseName { get; set; }
+
+        [XmlElement]
+        public GenerationOptions GenerationOptions { get; set; }
+
+        [XmlArrayItem(typeof(Table))]
+        public List<Table> Tables { get; set; }
+
+        [XmlArrayItem(typeof(Schema))]
+        public List<Schema> Schemas { get; set; }
+
         public Database()
         {
             Schemas = new List<Schema>();
