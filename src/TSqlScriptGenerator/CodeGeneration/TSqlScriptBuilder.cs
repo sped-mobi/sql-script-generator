@@ -4,6 +4,7 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.SqlServer.TransactSql.Configuration;
@@ -125,6 +126,62 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             }
         }
 
+        public void AddUniqueConstraintBatches(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)
+        {
+            AddBatch(Generator.GeneratePrintStatement($"========== Creating Unique Constraints =========="));
+            List<Index> indexes = new List<Index>();
+            foreach(var table in tables)
+            {
+                foreach(var index in table.Indexes)
+                {
+                    if (!index.IsPrimary)
+                    {
+                        if (index.IsUnique)
+                        {
+                            indexes.Add(index);
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < indexes.Count; i++)
+            {
+                Index index = indexes[i];
+                AddBatch(Generator.GeneratePrintStatement($"[{i + 1,-2} - {indexes.Count}] Creating unique constraint [{index.Name}]"));
+                AddCreateUniqueConstraintBatch(index, quoteType);
+            }
+        }
+
+        private void AddCreateUniqueConstraintBatch(Index index, QuoteType quoteType)
+        {
+            List<ColumnWithSortOrder> columns = new List<ColumnWithSortOrder>();
+            foreach (var member in index.Members)
+            {
+                Column column = index.Parent.Columns.FirstOrDefault(c => c.Name == member.Column);
+                columns.Add(
+                    ScriptFactory.ColumnWithSortOrder(
+                        ScriptFactory.ColumnReferenceExpression(
+                            ScriptFactory.MultiPartIdentifier(
+                                ScriptFactory.Identifier(member.Column, quoteType)), ColumnType.Regular), SortOrder.Ascending));
+            }
+            UniqueConstraintDefinition uniqueConstraint = ScriptFactory.UniqueConstraintDefinition(
+                        ScriptFactory.Identifier(index.Name, quoteType),
+                        false,
+                        index.IsClustered,
+                        null,
+                        null,
+                        null,
+                        columns
+                        );
+            AddBatch(ScriptFactory.AlterTableAddTableElement(
+                ScriptFactory.TableDefinition(
+                null,
+                null,
+                new List<ConstraintDefinition> { uniqueConstraint },
+                null),
+                Generator.GenerateSchemaObjectName(index.Parent, quoteType)));
+
+        }
+
         public void AddForeignKeyConstraintBatches(IEnumerable<Table> tables, QuoteType quoteType = QuoteType.NotQuoted)
         {
             AddBatch(Generator.GeneratePrintStatement($"========== Creating Froreign Keys =========="));
@@ -139,7 +196,6 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             for (int i = 0; i < keys.Count; i++)
             {
                 ForeignKey key = keys[i];
-                //var pkTable = key.Parent.Parent.Tables.FirstOrDefault(t => t.Name == key.PkTable);
                 AddBatch(Generator.GeneratePrintStatement($"[{i+1,-2} - {keys.Count}] Creating foriegn key constraint [{key.Name}]"));
                 AddCreateForeignKeyBatch(key, quoteType);
             }

@@ -41,26 +41,11 @@
     <Schema Name="db_denydatawriter" DbDefault="1" />
   </Schemas>
   <Tables>
-    <Table Schema="dbo" Name="CaseManager">
-      <Columns>
-        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
-        <Column Name="FirstName" DataType="VARCHAR(MAX)" AllowNulls="0" />
-        <Column Name="MiddleName" DataType="VARCHAR(MAX)" AllowNulls="1" />
-        <Column Name="LastName" DataType="VARCHAR(MAX)" AllowNulls="0" />
-      </Columns>
-      <Indexes>
-        <Index Name="PK_CaseManager_ID" IsPrimary="1" IsClustered="1" IsUnique="1">
-          <Members>
-            <Member Column="ID" />
-          </Members>
-        </Index>
-      </Indexes>
-    </Table>
     <Table Schema="dbo" Name="EducationPlan">
       <Columns>
         <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
-        <Column Name="ValidStart" DataType="DATETIME" AllowNulls="0"/>
-        <Column Name="ValidEnd" DataType="DATETIME" AllowNulls="0"/>
+        <Column Name="ValidStart" DataType="DATE" AllowNulls="1"/>
+        <Column Name="ValidEnd" DataType="DATE" AllowNulls="1"/>
       </Columns>
       <Indexes>
         <Index Name="PK_EducationPlan_ID" IsPrimary="1" IsClustered="1" IsUnique="1">
@@ -73,6 +58,7 @@
     <Table Schema="dbo" Name="Accommodation">
       <Columns>
         <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
+        <Column Name="EducationPlanID" DataType="INT" AllowNulls="1" />
         <Column Name="Description" DataType="VARCHAR(MAX)"/>
         <Column Name="Category" DataType="VARCHAR(MAX)"/>
       </Columns>
@@ -83,68 +69,10 @@
           </Members>
         </Index>
       </Indexes>
-    </Table>
-    <Table Schema="dbo" Name="Subject">
-      <Columns>
-        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
-        <Column Name="Description" DataType="VARCHAR(MAX)" AllowNulls="0"/>
-      </Columns>
-      <Indexes>
-        <Index Name="PK_Subject_ID" IsPrimary="1" IsClustered="1" IsUnique="1">
-          <Members>
-            <Member Column="ID" />
-          </Members>
-        </Index>
-      </Indexes>
-    </Table>
-    <Table Schema="dbo" Name="AccommodationReference">
-      <Columns>
-        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
-        <Column Name="EducationPlanID" DataType="INT" AllowNulls="1" />
-        <Column Name="AccommodationID" DataType="INT" AllowNulls="1" />
-      </Columns>
-      <Indexes>
-        <Index Name="PK_AccommodationReference_ID" IsPrimary="1" IsClustered="1" IsUnique="1">
-          <Members>
-            <Member Column="ID" />
-          </Members>
-        </Index>
-      </Indexes>
       <ForeignKeys>
-        <ForeignKey Name="FK_AccommodationReference_EducationPlanID" PkTableSchema="dbo" PkTable="EducationPlan">
+        <ForeignKey Name="FK_Accommodation_EducationPlanID" PkTableSchema="dbo" PkTable="EducationPlan">
           <ForeignKeyColumns>
             <ForeignKeyColumn FkColumn="EducationPlanID" PkColumn="ID" />
-          </ForeignKeyColumns>
-        </ForeignKey>
-        <ForeignKey Name="FK_AccommodationReference_AccommodationID" PkTableSchema="dbo" PkTable="Accommodation">
-          <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="AccommodationID" PkColumn="ID" />
-          </ForeignKeyColumns>
-        </ForeignKey>
-      </ForeignKeys>
-    </Table>
-    <Table Schema="dbo" Name="SubjectReference">
-      <Columns>
-        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
-        <Column Name="AccommodationReferenceID" DataType="INT" AllowNulls="1" />
-        <Column Name="SubjectID" DataType="INT" AllowNulls="1" />
-      </Columns>
-      <Indexes>
-        <Index Name="PK_SubjectReference_ID" IsPrimary="1" IsClustered="1" IsUnique="1">
-          <Members>
-            <Member Column="ID" />
-          </Members>
-        </Index>
-      </Indexes>
-      <ForeignKeys>
-        <ForeignKey Name="FK_SubjectReference_AccommodationReferenceID" PkTableSchema="dbo" PkTable="AccommodationReference">
-          <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="AccommodationReferenceID" PkColumn="ID" />
-          </ForeignKeyColumns>
-        </ForeignKey>
-        <ForeignKey Name="FK_SubjectReference_SubjectID" PkTableSchema="dbo" PkTable="Subject">
-          <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="SubjectID" PkColumn="ID" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>
@@ -174,13 +102,14 @@
     <Table Schema="dbo" Name="Student">
       <Columns>
         <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
-        <Column Name="CaseManagerID" DataType="INT" AllowNulls="1" />
-        <Column Name="FirstName" DataType="VARCHAR(MAX)" AllowNulls="0" />
-        <Column Name="MiddleName" DataType="VARCHAR(MAX)" AllowNulls="1" />
-        <Column Name="LastName" DataType="VARCHAR(MAX)" AllowNulls="0" />
-        <Column Name="DateOfBirth" DataType="DATETIME" AllowNulls="1"/>
-        <Column Name="Gender" DataType="BIT" AllowNulls="0" />
-        <Column Name="GradeLevel" DataType="INT" AllowNulls="0"/>
+        <Column Name="EducationPlanID" DataType="INT"  />
+        <Column Name="CaseManager" DataType="VARCHAR(MAX)"  />
+        <Column Name="FirstName" DataType="VARCHAR(MAX)"  />
+        <Column Name="MiddleName" DataType="VARCHAR(MAX)"  />
+        <Column Name="LastName" DataType="VARCHAR(MAX)" />
+        <Column Name="DateOfBirth" DataType="DATE" />
+        <Column Name="Gender" DataType="VARCHAR(MAX)"  />
+        <Column Name="GradeLevel" DataType="INT" />
       </Columns>
       <Indexes>
         <Index Name="PK_Student_ID" IsPrimary="1" IsClustered="1" IsUnique="1">
@@ -188,11 +117,70 @@
             <Member Column="ID" />
           </Members>
         </Index>
+        <Index Name="UQ_Student_EducationPlanID" IsPrimary="0" IsClustered="0" IsUnique="1">
+          <Members>
+            <Member Column="EducationPlanID" />
+          </Members>
+        </Index>
       </Indexes>
       <ForeignKeys>
-        <ForeignKey Name="FK_Student_CaseManagerID" PkTableSchema="dbo" PkTable="CaseManager">
+        <ForeignKey Name="FK_Student_EducationPlanID" PkTableSchema="dbo" PkTable="EducationPlan">
           <ForeignKeyColumns>
-            <ForeignKeyColumn FkColumn="CaseManagerID" PkColumn="ID" />
+            <ForeignKeyColumn FkColumn="EducationPlanID" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+
+    <Table Schema="dbo" Name="Goal">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
+        <Column Name="EducationPlanID" DataType="INT" AllowNulls="1" />
+        <Column Name="IsActive" DataType="BIT" AllowNulls="1" />
+        <Column Name="Number" DataType="INT" AllowNulls="1" />
+        <Column Name="Focus" DataType="VARCHAR(MAX)" AllowNulls="1" />
+        <Column Name="Timeframe" DataType="VARCHAR(MAX)" AllowNulls="1" />
+        <Column Name="Condition" DataType="VARCHAR(MAX)" AllowNulls="1" />
+        <Column Name="Behavior" DataType="VARCHAR(MAX)" AllowNulls="1" />
+        <Column Name="Criterion" DataType="VARCHAR(MAX)" AllowNulls="1" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Goal_ID" IsPrimary="1" IsClustered="1" IsUnique="1">
+          <Members>
+            <Member Column="ID" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_Goal_EducationPlanID" PkTableSchema="dbo" PkTable="EducationPlan">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="EducationPlanID" PkColumn="ID" />
+          </ForeignKeyColumns>
+        </ForeignKey>
+      </ForeignKeys>
+    </Table>
+
+    <Table Schema="dbo" Name="Objective">
+      <Columns>
+        <Column Name="ID" IsIdentity="1" IdentitySeed="1" IdentityIncrement="1" DataType="INT" />
+        <Column Name="GoalID" DataType="INT" AllowNulls="1"/>
+        <Column Name="Code" DataType="NVARCHAR(MAX)" AllowNulls="1" />
+        <Column Name="Timeframe" DataType="VARCHAR(MAX)" AllowNulls="1" />
+        <Column Name="Condition" DataType="VARCHAR(MAX)" AllowNulls="1" />
+        <Column Name="Behavior" DataType="VARCHAR(MAX)" AllowNulls="1" />
+        <Column Name="Criterion" DataType="VARCHAR(MAX)" AllowNulls="1" />
+      </Columns>
+      <Indexes>
+        <Index Name="PK_Objective_ID" IsPrimary="1" IsClustered="1" IsUnique="1">
+          <Members>
+            <Member Column="ID" />
+          </Members>
+        </Index>
+      </Indexes>
+      <ForeignKeys>
+        <ForeignKey Name="FK_Objective_GoalID" PkTableSchema="dbo" PkTable="Goal">
+          <ForeignKeyColumns>
+            <ForeignKeyColumn FkColumn="GoalID" PkColumn="ID" />
           </ForeignKeyColumns>
         </ForeignKey>
       </ForeignKeys>

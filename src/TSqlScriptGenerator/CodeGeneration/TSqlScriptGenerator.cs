@@ -25,10 +25,11 @@ namespace Microsoft.SqlServer.TransactSql.CodeGeneration
             builder.AddCreateTableBatches(database.Tables, quoteType);
             builder.AddPrimaryKeyConstraintBatches(database.Tables, quoteType);
             builder.AddForeignKeyConstraintBatches(database.Tables, quoteType);
-            builder.AddInsertProcedures(database.Tables, quoteType);
-            builder.AddReadProcedures(database.Tables, quoteType);
-            builder.AddUpdateProcedures(database.Tables, quoteType);
-            builder.AddAddFindProcedures(database.Tables, quoteType);
+            builder.AddUniqueConstraintBatches(database.Tables, quoteType);
+            //builder.AddInsertProcedures(database.Tables, quoteType);
+            //builder.AddReadProcedures(database.Tables, quoteType);
+            //builder.AddUpdateProcedures(database.Tables, quoteType);
+            //builder.AddAddFindProcedures(database.Tables, quoteType);
 
             return builder;
         }
